@@ -4,144 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistem Verifikasi Surat Keterangan Digital - FIKes</title>
-    <!-- Tailwind CSS untuk Desain yang Modern & Scannable -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
-    </style>
+    <!-- Menghubungkan ke File CSS Eksternal -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts untuk font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body class="flex items-center justify-center min-h-screen p-4">
+<body>
 
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-        <!-- Header Atas Instansi -->
-        <div class="bg-emerald-700 p-6 text-center text-white">
-            <h2 class="text-xs font-bold uppercase tracking-widest text-emerald-200">Sistem Verifikasi Digital</h2>
-            <h1 class="text-xl font-extrabold mt-1">Fakultas Ilmu Kesehatan</h1>
-            <p class="text-sm opacity-90 font-medium mt-0.5">Universitas Faletehan</p>
+    <div class="verification-card">
+        <!-- Header Instansi -->
+        <div class="card-header">
+            <h2>Sistem Verifikasi Digital</h2>
+            <h1>Fakultas Ilmu Kesehatan</h1>
+            <p>Universitas Faletehan</p>
         </div>
 
-        <!-- Konten Hasil Verifikasi -->
-        <div class="p-6">
-            <!-- Loader saat mengambil data -->
-            <div id="loader" class="text-center py-8">
-                <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-emerald-700 mx-auto"></div>
-                <p class="text-gray-500 text-sm mt-4 font-medium">Mencocokkan tanda tangan digital...</p>
+        <!-- Konten Utama -->
+        <div class="card-content">
+            <!-- Loader Status -->
+            <div id="loader" class="loader-container">
+                <div class="spinner"></div>
+                <p>Mencocokkan tanda tangan digital...</p>
             </div>
 
             <!-- Tampilan Jika Dokumen VALID -->
-            <div id="status-valid" class="hidden text-center animate-fade-in">
-                <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-10 h-10 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div id="status-valid" class="status-container hidden">
+                <div class="icon-badge valid-badge">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                     </svg>
                 </div>
-                <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full uppercase tracking-wider">Dokumen Sah & Aktif</span>
+                <span class="status-label">Dokumen Sah & Aktif</span>
                 
                 <!-- Detail Atribut Mahasiswa -->
-                <div class="mt-6 border-t border-gray-100 pt-4 text-left space-y-3.5">
-                    <div>
-                        <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Nama Mahasiswa</label>
-                        <span id="view-nama" class="text-base font-bold text-gray-800 block"></span>
+                <div class="data-profile">
+                    <div class="data-group">
+                        <label>Nama Mahasiswa</label>
+                        <span id="view-nama" class="font-bold text-dark"></span>
                     </div>
-                    <div>
-                        <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider block">NIM</label>
-                        <span id="view-nim" class="text-sm font-mono font-bold text-gray-700 block"></span>
+                    <div class="data-group">
+                        <label>NIM</label>
+                        <span id="view-nim" class="font-mono text-medium"></span>
                     </div>
-                    <div>
-                        <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Program Studi</label>
-                        <span id="view-prodi" class="text-sm font-medium text-gray-700 block"></span>
+                    <div class="data-group">
+                        <label>Program Studi</label>
+                        <span id="view-prodi" class="text-medium"></span>
                     </div>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Jenis Kelas</label>
-                            <span id="view-kelas" class="text-sm font-medium text-gray-700 block"></span>
+                    
+                    <div class="grid-2col">
+                        <div class="data-group">
+                            <label>Jenis Kelas</label>
+                            <span id="view-kelas" class="text-medium"></span>
                         </div>
-                        <div>
-                            <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Status</label>
-                            <span id="view-status" class="text-sm font-bold text-emerald-600 block"></span>
+                        <div class="data-group">
+                            <label>Status</label>
+                            <span id="view-status" class="font-bold text-emerald"></span>
                         </div>
                     </div>
-                    <div class="border-t border-dashed border-gray-200 my-2 pt-3">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Nomor Surat</label>
-                                <span id="view-nosurat" class="text-xs font-mono font-medium text-gray-600 block"></span>
-                            </div>
-                            <div>
-                                <label class="text-xs font-semibold text-gray-400 uppercase tracking-wider block">Tanggal Terbit</label>
-                                <span id="view-tglsurat" class="text-xs font-medium text-gray-600 block"></span>
-                            </div>
+                    
+                    <div class="divider"></div>
+                    
+                    <div class="grid-2col">
+                        <div class="data-group">
+                            <label>Nomor Surat</label>
+                            <span id="view-nosurat" class="font-mono text-small"></span>
+                        </div>
+                        <div class="data-group">
+                            <label>Tanggal Terbit</label>
+                            <span id="view-tglsurat" class="text-small"></span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Tampilan Jika Dokumen INVALID / TIDAK TERDAFTAR -->
-            <div id="status-invalid" class="hidden text-center py-6 animate-fade-in">
-                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <!-- Tampilan Jika Dokumen INVALID -->
+            <div id="status-invalid" class="status-container hidden">
+                <div class="icon-badge invalid-badge">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 </div>
-                <h3 class="text-lg font-bold text-gray-800">Data Tidak Ditemukan</h3>
-                <p class="text-sm text-gray-500 mt-2 px-4">QR Code atau ID Surat tidak valid, tidak diterbitkan oleh sistem resmi tata usaha FIKes.</p>
+                <h3>Data Tidak Ditemukan</h3>
+                <p class="error-text">QR Code atau ID Surat tidak valid, tidak diterbitkan oleh sistem resmi tata usaha FIKes.</p>
             </div>
         </div>
 
         <!-- Footer -->
-        <div class="bg-gray-50 px-6 py-4 border-t border-gray-100 text-center text-xs font-medium text-gray-400">
+        <div class="card-footer">
             &copy; 2026 Tata Usaha FIKes Universitas Faletehan
         </div>
     </div>
 
-    <!-- Logika Inti Penarikan Data Dinamis -->
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            const idMahasiswa = urlParams.get('id');
-
-            const loader = document.getElementById("loader");
-            const statusValid = document.getElementById("status-valid");
-            const statusInvalid = document.getElementById("status-invalid");
-
-            if (!idMahasiswa) {
-                loader.classList.add("hidden");
-                statusInvalid.classList.remove("hidden");
-                return;
-            }
-
-            // Membaca file database.json murni di root repositori yang sama
-            fetch('./database.json?nocache=' + new Date().getTime())
-                .then(response => {
-                    if (!response.ok) throw new Error("Database gagal dimuat");
-                    return response.json();
-                })
-                .then(data => {
-                    loader.classList.add("hidden");
-                    
-                    if (data && data[idMahasiswa]) {
-                        const mhs = data[idMahasiswa];
-                        
-                        // Isi Elemen Web dengan Data JSON Terbaca
-                        document.getElementById("view-nama").innerText = mhs.nama;
-                        document.getElementById("view-nim").innerText = mhs.nim;
-                        document.getElementById("view-prodi").innerText = mhs.programStudi;
-                        document.getElementById("view-kelas").innerText = mhs.jenisKelas;
-                        document.getElementById("view-status").innerText = mhs.statusAktif;
-                        document.getElementById("view-nosurat").innerText = mhs.nomorSurat;
-                        document.getElementById("view-tglsurat").innerText = mhs.tanggalSurat;
-
-                        statusValid.classList.remove("hidden");
-                    } else {
-                        statusInvalid.classList.remove("hidden");
-                    }
-                })
-                .catch(error => {
-                    console.error(error);
-                    loader.classList.add("hidden");
-                    statusInvalid.classList.remove("hidden");
-                });
-        });
-    </script>
+    <!-- Menghubungkan ke File JavaScript Eksternal -->
+    <script src="app.js"></script>
 </body>
 </html>
