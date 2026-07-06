@@ -14,16 +14,24 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    // Mengambil data dari database.json di repositori yang sama (Bebas Cache)
-    fetch('./database.json?nocache=' + new Date().getTime())
+    // --- SESUAIKAN URL DI BAWAH INI DENGAN REPO GITHUB ANDA ---
+    // Gunakan URL mentah (raw.githubusercontent) agar bypass cache dan selalu realtime
+    const GITHUB_USERNAME = "Shajara-ai";
+    const REPO_NAME = "surat-keterangan";
+    const BRANCH = "main";
+    
+    const jsonUrl = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/${BRANCH}/database.json?nocache=` + new Date().getTime();
+
+    // Mengambil data dari database.json di repositori GitHub (Bebas Cache)
+    fetch(jsonUrl)
         .then(response => {
-            if (!response.ok) throw new Error("Gagal memuat basis data.");
+            if (!response.ok) throw new Error("Gagal memuat basis data dari GitHub.");
             return response.json();
         })
         .then(data => {
             loader.classList.add("hidden");
             
-            // Periksa apakah NIM mahasiswa terdaftar di database
+            // Periksa apakah ID/NIM mahasiswa terdaftar di database
             if (data && data[idMahasiswa]) {
                 const mhs = data[idMahasiswa];
                 
