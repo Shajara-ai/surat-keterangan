@@ -4,9 +4,9 @@
     "nim": "1022031237",
     "programStudi": "Sarjana Keperawatan",
     "jenisKelas": "REGULER",
-    "statusAktif": "Aktif Dokumen Sah",
+    "statusAktif": "Aktif",
     "nomorSurat": "2924",
-    "tanggalSurat": "6 April 2026"
+    "tanggalSurat": ""
   },
   "1440125041003": {
     "nama": "Akbar Ilmi Bilamanda",
@@ -22,8 +22,8 @@
     "nim": "1590125031172",
     "programStudi": "Pendidikan Profesi Bidan",
     "jenisKelas": "NONREG",
-    "statusAktif": "Aktif",
+    "statusAktif": "Aktif Dokumen Sah",
     "nomorSurat": "2923",
-    "tanggalSurat": ""
+    "tanggalSurat": "9 April 2026"
   }
 }
