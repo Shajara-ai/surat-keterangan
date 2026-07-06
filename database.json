@@ -1,20 +1,29 @@
 {
-  "2301001": {
-    "nama": "Ahmad Fauzi",
-    "nim": "2301001",
-    "programStudi": "S1 Keperawatan",
-    "jenisKelas": "Reguler",
+  "1022031237": {
+    "nama": "Uswatun Hasanah",
+    "nim": "1022031237",
+    "programStudi": "Sarjana Keperawatan",
+    "jenisKelas": "REGULER",
     "statusAktif": "Aktif",
-    "nomorSurat": "045/FIKES/UF/VII/2026",
-    "tanggalSurat": "7 Juli 2026"
+    "nomorSurat": "2924",
+    "tanggalSurat": ""
   },
-  "2301002": {
-    "nama": "Siti Aminah",
-    "nim": "2301002",
-    "programStudi": "S1 Kebidanan",
-    "jenisKelas": "Non-Reguler",
+  "1440125041003": {
+    "nama": "Akbar Ilmi Bilamanda",
+    "nim": "1440125041003",
+    "programStudi": "Diploma Iii Keperawatan",
+    "jenisKelas": "REGULER",
     "statusAktif": "Aktif",
-    "nomorSurat": "046/FIKES/UF/VII/2026",
-    "tanggalSurat": "7 Juli 2026"
+    "nomorSurat": "2916",
+    "tanggalSurat": ""
+  },
+  "1590125031172": {
+    "nama": "Ratna Fitriyani",
+    "nim": "1590125031172",
+    "programStudi": "Pendidikan Profesi Bidan",
+    "jenisKelas": "NONREG",
+    "statusAktif": "Aktif Dokumen Sah",
+    "nomorSurat": "2923",
+    "tanggalSurat": "9 April 2026"
   }
 }
