@@ -1,0 +1,20 @@
+{
+  "2301001": {
+    "nama": "Ahmad Fauzi",
+    "nim": "2301001",
+    "programStudi": "S1 Keperawatan",
+    "jenisKelas": "Reguler",
+    "statusAktif": "Aktif",
+    "nomorSurat": "045/FIKES/UF/VII/2026",
+    "tanggalSurat": "7 Juli 2026"
+  },
+  "2301002": {
+    "nama": "Siti Aminah",
+    "nim": "2301002",
+    "programStudi": "S1 Kebidanan",
+    "jenisKelas": "Non-Reguler",
+    "statusAktif": "Aktif",
+    "nomorSurat": "046/FIKES/UF/VII/2026",
+    "tanggalSurat": "7 Juli 2026"
+  }
+}
