@@ -1,0 +1,188 @@
+/* Reset & Pengaturan Global */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f3f4f6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-h: 100vh;
+    padding: 16px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Desain Kartu Utama */
+.verification-card {
+    width: 100%;
+    max-width: 440px;
+    background-color: #ffffff;
+    border-radius: 16px;
+    shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.05), 0 8px 10px -6px rgb(0 0 0 / 0.05);
+    overflow: hidden;
+    border: 1px solid #f3f4f6;
+}
+
+/* Bagian Atas / Header */
+.card-header {
+    background-color: #047857; /* Hijau Emerald FIKes */
+    padding: 24px;
+    text-align: center;
+    color: #ffffff;
+}
+
+.card-header h2 {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #a7f3d0;
+}
+
+.card-header h1 {
+    font-size: 20px;
+    font-weight: 800;
+    margin-top: 4px;
+}
+
+.card-header p {
+    font-size: 14px;
+    opacity: 0.9;
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+/* Konten Dalam */
+.card-content {
+    padding: 24px;
+}
+
+/* Komponen Loader */
+.loader-container {
+    text-align: center;
+    padding: 32px 0;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f4f6;
+    border-bottom-color: #047857;
+    border-radius: 50%;
+    margin: 0 auto;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loader-container p {
+    color: #6b7280;
+    font-size: 14px;
+    margin-top: 16px;
+    font-weight: 500;
+}
+
+/* Status Data */
+.status-container {
+    text-align: center;
+}
+
+.icon-badge {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px auto;
+}
+
+.valid-badge { background-color: #d1fae5; color: #059669; }
+.invalid-badge { background-color: #fee2e2; color: #dc2626; }
+
+.icon-badge svg { width: 40px; height: 40px; }
+
+.status-label {
+    display: inline-block;
+    padding: 4px 12px;
+    background-color: #d1fae5;
+    color: #065f46;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Grouping Informasi Mahasiswa */
+.data-profile {
+    text-align: left;
+    margin-top: 24px;
+    border-top: 1px solid #f3f4f6;
+    padding-top: 16px;
+}
+
+.data-group {
+    margin-bottom: 14px;
+}
+
+.data-group label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+}
+
+.data-group span {
+    display: block;
+    margin-top: 2px;
+}
+
+.font-bold { font-weight: 700; }
+.font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+.text-dark { color: #1f2937; font-size: 16px; }
+.text-medium { color: #374151; font-size: 14px; }
+.text-small { color: #4b5563; font-size: 13px; }
+.text-emerald { color: #059669; }
+
+.grid-2col {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.divider {
+    border-top: 1px dashed #e5e7eb;
+    margin: 8px 0 14px 0;
+    padding-top: 4px;
+}
+
+.error-text {
+    font-size: 14px;
+    color: #6b7280;
+    margin-top: 8px;
+    padding: 0 16px;
+}
+
+/* Footer Kartu */
+.card-footer {
+    background-color: #f9fafb;
+    padding: 16px;
+    border-top: 1px solid #f3f4f6;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    color: #9ca3af;
+}
