@@ -4,24 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verifikasi Surat Digital</title>
-    <style>
-        body { font-family: 'Times New Roman', Times, serif; background-color: #f4f6f9; padding: 20px; }
-        .container { max-width: 500px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #333; border-bottom: 2px solid #333; padding-bottom: 10px; }
-        .info-group { margin-bottom: 15px; }
-        .label { font-weight: bold; color: #666; font-size: 14px; }
-        .value { font-size: 16px; color: #111; margin-top: 5px; }
-        .status-success { color: green; font-weight: bold; text-align: center; margin-top: 20px; }
-        .status-failed { color: red; font-weight: bold; text-align: center; margin-top: 20px; }
-        .hidden { display: none; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="container">
     <h2>VERIFIKASI DOKUMEN</h2>
     
-    <div id="loading" style="text-align: center;">Memeriksa keaslian dokumen...</div>
+    <div id="loading">Memeriksa keaslian dokumen...</div>
     
     <div id="view-success" class="hidden">
         <div class="info-group">
@@ -52,45 +42,6 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const certId = urlParams.get('id');
-
-        if (!certId) {
-            document.getElementById("loading").classList.add("hidden");
-            document.getElementById("view-failed").classList.remove("hidden");
-            return;
-        }
-
-        // Ambil data langsung dari file database.json di repository GitHub yang sama
-        fetch('database.json')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("loading").classList.add("hidden");
-                
-                // Cari data berdasarkan nomor surat (case-insensitive)
-                const targetKey = Object.keys(data).find(key => key.toLowerCase() === certId.trim().toLowerCase());
-                
-                if (targetKey) {
-                    const mhs = data[targetKey];
-                    document.getElementById("res-nama").textContent = mhs.name;
-                    document.getElementById("res-nim").textContent = mhs.nim;
-                    document.getElementById("res-prodi").textContent = mhs.prodi;
-                    document.getElementById("res-semester").textContent = mhs.semester;
-                    document.getElementById("res-id").textContent = targetKey;
-                    
-                    document.getElementById("view-success").classList.remove("hidden");
-                } else {
-                    document.getElementById("view-failed").classList.remove("hidden");
-                }
-            })
-            .catch(err => {
-                console.error(err);
-                document.getElementById("loading").classList.add("hidden");
-                document.getElementById("view-failed").classList.remove("hidden");
-            });
-    });
-</script>
+<script src="app.js"></script>
 </body>
 </html>
