@@ -3,101 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Verifikasi Surat Keterangan Digital - FIKes</title>
-    <!-- Menghubungkan ke File CSS Eksternal -->
-    <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts untuk font Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Verifikasi Surat Digital</title>
+    <style>
+        body { font-family: 'Times New Roman', Times, serif; background-color: #f4f6f9; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        .info-group { margin-bottom: 15px; }
+        .label { font-weight: bold; color: #666; font-size: 14px; }
+        .value { font-size: 16px; color: #111; margin-top: 5px; }
+        .status-success { color: green; font-weight: bold; text-align: center; margin-top: 20px; }
+        .status-failed { color: red; font-weight: bold; text-align: center; margin-top: 20px; }
+        .hidden { display: none; }
+    </style>
 </head>
 <body>
 
-    <div class="verification-card">
-        <!-- Header Instansi -->
-        <div class="card-header">
-            <h2>Sistem Verifikasi Digital</h2>
-            <h1>Fakultas Ilmu Kesehatan</h1>
-            <p>Universitas Faletehan</p>
+<div class="container">
+    <h2>VERIFIKASI DOKUMEN</h2>
+    
+    <div id="loading" style="text-align: center;">Memeriksa keaslian dokumen...</div>
+    
+    <div id="view-success" class="hidden">
+        <div class="info-group">
+            <div class="label">NAMA MAHASISWA</div>
+            <div id="res-nama" class="value">-</div>
         </div>
-
-        <!-- Konten Utama -->
-        <div class="card-content">
-            <!-- Loader Status -->
-            <div id="loader" class="loader-container">
-                <div class="spinner"></div>
-                <p>Mencocokkan tanda tangan digital...</p>
-            </div>
-
-            <!-- Tampilan Jika Dokumen VALID -->
-            <div id="status-valid" class="status-container hidden">
-                <div class="icon-badge valid-badge">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                </div>
-                <span class="status-label">Dokumen Sah & Aktif</span>
-                
-                <!-- Detail Atribut Mahasiswa -->
-                <div class="data-profile">
-                    <div class="data-group">
-                        <label>Nama Mahasiswa</label>
-                        <span id="view-nama" class="font-bold text-dark"></span>
-                    </div>
-                    <div class="data-group">
-                        <label>NIM</label>
-                        <span id="view-nim" class="font-mono text-medium"></span>
-                    </div>
-                    <div class="data-group">
-                        <label>Program Studi</label>
-                        <span id="view-prodi" class="text-medium"></span>
-                    </div>
-                    
-                    <div class="grid-2col">
-                        <div class="data-group">
-                            <label>Jenis Kelas</label>
-                            <span id="view-kelas" class="text-medium"></span>
-                        </div>
-                        <div class="data-group">
-                            <label>Status</label>
-                            <span id="view-status" class="font-bold text-emerald"></span>
-                        </div>
-                    </div>
-                    
-                    <div class="divider"></div>
-                    
-                    <div class="grid-2col">
-                        <div class="data-group">
-                            <label>Nomor Surat</label>
-                            <span id="view-nosurat" class="font-mono text-small"></span>
-                        </div>
-                        <div class="data-group">
-                            <label>Tanggal Terbit</label>
-                            <span id="view-tglsurat" class="text-small"></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tampilan Jika Dokumen INVALID -->
-            <div id="status-invalid" class="status-container hidden">
-                <div class="icon-badge invalid-badge">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </div>
-                <h3>Data Tidak Ditemukan</h3>
-                <p class="error-text">QR Code atau ID Surat tidak valid, tidak diterbitkan oleh sistem resmi tata usaha FIKes.</p>
-            </div>
+        <div class="info-group">
+            <div class="label">NIM</div>
+            <div id="res-nim" class="value">-</div>
         </div>
-
-        <!-- Footer -->
-        <div class="card-footer">
-            &copy; 2026 Tata Usaha FIKes Universitas Faletehan
+        <div class="info-group">
+            <div class="label">PROGRAM STUDI</div>
+            <div id="res-prodi" class="value">-</div>
         </div>
+        <div class="info-group">
+            <div class="label">SEMESTER</div>
+            <div id="res-semester" class="value">-</div>
+        </div>
+        <div class="info-group">
+            <div class="label">NOMOR SURAT</div>
+            <div id="res-id" class="value">-</div>
+        </div>
+        <div class="status-success">✓ DOKUMEN ASLI & TERDAFTAR</div>
     </div>
 
-    <!-- Menghubungkan ke File JavaScript Eksternal -->
-    <script src="app.js"></script>
+    <div id="view-failed" class="hidden">
+        <div class="status-failed">❌ DOKUMEN TIDAK VALID / TIDAK TERDAFTAR</div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const certId = urlParams.get('id');
+
+        if (!certId) {
+            document.getElementById("loading").classList.add("hidden");
+            document.getElementById("view-failed").classList.remove("hidden");
+            return;
+        }
+
+        // Ambil data langsung dari file database.json di repository GitHub yang sama
+        fetch('database.json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("loading").classList.add("hidden");
+                
+                // Cari data berdasarkan nomor surat (case-insensitive)
+                const targetKey = Object.keys(data).find(key => key.toLowerCase() === certId.trim().toLowerCase());
+                
+                if (targetKey) {
+                    const mhs = data[targetKey];
+                    document.getElementById("res-nama").textContent = mhs.name;
+                    document.getElementById("res-nim").textContent = mhs.nim;
+                    document.getElementById("res-prodi").textContent = mhs.prodi;
+                    document.getElementById("res-semester").textContent = mhs.semester;
+                    document.getElementById("res-id").textContent = targetKey;
+                    
+                    document.getElementById("view-success").classList.remove("hidden");
+                } else {
+                    document.getElementById("view-failed").classList.remove("hidden");
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                document.getElementById("loading").classList.add("hidden");
+                document.getElementById("view-failed").classList.remove("hidden");
+            });
+    });
+</script>
 </body>
 </html>
