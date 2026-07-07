@@ -1,29 +1,29 @@
 {
-    "1022031237": {
-        "nama": "Uswatun Hasanah",
-        "nim": "1022031237",
-        "programStudi": "Sarjana Keperawatan",
-        "jenisKelas": "REGULER",
-        "statusAktif": "Aktif Dokumen Sah",
-        "nomorSurat": "2909",
-        "tanggalSurat": "7 Juli 2026"
-    },
-    "1440125041003": {
-        "nama": "Akbar Ilmi Bilamanda",
-        "nim": "1440125041003",
-        "programStudi": "Diploma III Keperawatan",
-        "jenisKelas": "REGULER",
-        "statusAktif": "Aktif Dokumen Sah",
-        "nomorSurat": "2916",
-        "tanggalSurat": "7 Juli 2026"
-    },
-    "1590125031172": {
-        "nama": "roni",
-        "nim": "1590125031172",
-        "programStudi": "Pendidikan Profesi Bidan",
-        "jenisKelas": "REGULER",
-        "statusAktif": "Aktif Dokumen Sah",
-        "nomorSurat": "2930",
-        "tanggalSurat": "7 Juli 2026"
-    }
+  "1022031237": {
+    "nama": "Uswatun Hasanah",
+    "nim": "1022031237",
+    "programStudi": "Sarjana Keperawatan",
+    "jenisKelas": "REGULER",
+    "statusAktif": "Aktif Dokumen Sah",
+    "nomorSurat": "2909",
+    "tanggalSurat": "7 Juli 2026"
+  },
+  "1440125041003": {
+    "nama": "Akbar Ilmi Bilamanda",
+    "nim": "1440125041003",
+    "programStudi": "Diploma III Keperawatan",
+    "jenisKelas": "REGULER",
+    "statusAktif": "Aktif Dokumen Sah",
+    "nomorSurat": "2916",
+    "tanggalSurat": "07 July 2026"
+  },
+  "1590125031172": {
+    "nama": "roni",
+    "nim": "1590125031172",
+    "programStudi": "Pendidikan Profesi Bidan",
+    "jenisKelas": "REGULER",
+    "statusAktif": "Aktif Dokumen Sah",
+    "nomorSurat": "2930",
+    "tanggalSurat": "07 July 2026"
+  }
 }
