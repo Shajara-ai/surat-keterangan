@@ -1,59 +1,54 @@
-document.addEventListener("DOMContentLoaded", function () {
-    // Ambil parameter '?id=' dari URL browser
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Ambil parameter '?id=...' dari URL browser
     const urlParams = new URLSearchParams(window.location.search);
-    const idMahasiswa = urlParams.get('id');
+    const certId = urlParams.get('id');
 
-    const loader = document.getElementById("loader");
-    const statusValid = document.getElementById("status-valid");
-    const statusInvalid = document.getElementById("status-invalid");
+    // Elemen HTML yang akan dimanipulasi
+    const loadingEl = document.getElementById("loading");
+    const successView = document.getElementById("view-success");
+    const failedView = document.getElementById("view-failed");
 
-    // Jika parameter ID kosong langsung lempar ke status invalid
-    if (!idMahasiswa) {
-        loader.classList.add("hidden");
-        statusInvalid.classList.remove("hidden");
+    // Jika tidak ada ID di URL, langsung tampilkan pesan error
+    if (!certId) {
+        if (loadingEl) loadingEl.classList.add("hidden");
+        if (failedView) failedView.classList.remove("hidden");
         return;
     }
 
-    // --- SESUAIKAN URL DI BAWAH INI DENGAN REPO GITHUB ANDA ---
-    // Gunakan URL mentah (raw.githubusercontent) agar bypass cache dan selalu realtime
-    const GITHUB_USERNAME = "Shajara-ai";
-    const REPO_NAME = "surat-keterangan";
-    const BRANCH = "main";
-    
-    const jsonUrl = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${REPO_NAME}/${BRANCH}/database.json?nocache=` + new Date().getTime();
-
-    // Mengambil data dari database.json di repositori GitHub (Bebas Cache)
-    fetch(jsonUrl)
+    // 2. Ambil data secara real-time dari database.json di GitHub Pages
+    fetch('database.json?nocache=' + new Date().getTime()) // Trik ?nocache agar browser selalu ambil data terbaru
         .then(response => {
-            if (!response.ok) throw new Error("Gagal memuat basis data dari GitHub.");
+            if (!response.ok) {
+                throw new Error("Gagal memuat database.");
+            }
             return response.json();
         })
         .then(data => {
-            loader.classList.add("hidden");
+            if (loadingEl) loadingEl.classList.add("hidden");
             
-            // Periksa apakah ID/NIM mahasiswa terdaftar di database
-            if (data && data[idMahasiswa]) {
-                const mhs = data[idMahasiswa];
+            # 3. Cari data berdasarkan nomor surat (menghindari masalah spasi)
+            const targetKey = Object.keys(data).find(key => key.trim().toLowerCase() === certId.trim().toLowerCase());
+            
+            if (targetKey) {
+                const mhs = data[targetKey];
                 
-                // Distribusikan data teks ke elemen HTML terkait
-                document.getElementById("view-nama").innerText = mhs.nama;
-                document.getElementById("view-nim").innerText = mhs.nim;
-                document.getElementById("view-prodi").innerText = mhs.programStudi;
-                document.getElementById("view-kelas").innerText = mhs.jenisKelas;
-                document.getElementById("view-status").innerText = mhs.statusAktif;
-                document.getElementById("view-nosurat").innerText = mhs.nomorSurat;
-                document.getElementById("view-tglsurat").innerText = mhs.tanggalSurat;
-
-                // Tampilkan container valid
-                statusValid.classList.remove("hidden");
+                // Masukkan data mahasiswa ke elemen HTML masing-masing
+                document.getElementById("res-nama").textContent = mhs.name;
+                document.getElementById("res-nim").textContent = mhs.nim;
+                document.getElementById("res-prodi").textContent = mhs.prodi;
+                document.getElementById("res-semester").textContent = mhs.semester;
+                document.getElementById("res-id").textContent = targetKey;
+                
+                // Tampilkan container sukses
+                if (successView) successView.classList.remove("hidden");
             } else {
-                // Tampilkan container jika data mahasiswa tidak ada
-                statusInvalid.classList.remove("hidden");
+                // Jika nomor surat tidak ditemukan di json
+                if (failedView) failedView.classList.remove("hidden");
             }
         })
-        .catch(error => {
-            console.error("Error Verification System:", error);
-            loader.classList.add("hidden");
-            statusInvalid.classList.remove("hidden");
+        .catch(err => {
+            console.error("Error:", err);
+            if (loadingEl) loadingEl.classList.add("hidden");
+            if (failedView) failedView.classList.remove("hidden");
         });
 });
