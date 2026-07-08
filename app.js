@@ -25,11 +25,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let html5QrCode = null;
     let certificateDatabase = null;
 
-    // Ambil parameter dari URL (?id=CERT-XXX)
+    // Ambil parameter dari URL (?id=CERT-XXX atau ?id=NIM)
     const urlParams = new URLSearchParams(window.location.search);
     const certIdParam = urlParams.get('id');
 
-    // ⚡ BYPASS CACHE STRATEGY: Memaksa browser mengambil data paling baru langsung dari server GitHub
+    // ⚡ BYPASS CACHE STRATEGY: Memaksa mengambil data paling baru langsung dari server GitHub Pages
     fetch(`database.json?v=${new Date().getTime()}`, {
         headers: {
             'Cache-Control': 'no-cache, no-store, must-revalidate',
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (certId) {
             window.location.href = `?id=${encodeURIComponent(certId)}`;
         } else {
-            alert("Silakan masukkan Nomor Sertifikat terlebih dahulu.");
+            alert("Silakan masukkan Nomor Sertifikat atau NIM terlebih dahulu.");
         }
     });
 
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (e.key === "Enter") btnVerify.click();
     });
 
-    // Event Listener Tombol Kembali
+    // Event Listener Tombol Kembali (Mereset URL ke halaman utama tanpa parameter parameter query)
     btnBackList.forEach(btn => {
         btn.addEventListener("click", () => {
             window.location.href = window.location.pathname;
@@ -108,12 +108,12 @@ document.addEventListener("DOMContentLoaded", () => {
             
             // Masukkan data dasar ke HTML
             resName.textContent = data.name || "-";
-            resRole.textContent = data.role || "Peserta";
-            resActivity.innerHTML = data.activity || "-"; // Mendukung render tag <i> otomatis
+            resRole.textContent = data.role || "Mahasiswa Aktif";
+            resActivity.innerHTML = data.activity || "-"; // Mendukung render tag <i> prodi secara otomatis
             resDate.textContent = data.date || "-";
             resId.textContent = certKey;
             
-            // Loop data Penandatangan secara dinamis berdasarkan data JSON
+            // Loop data Penandatangan secara dinamis berdasarkan array data JSON
             signersContainer.innerHTML = "";
             if (data.signers && Array.isArray(data.signers) && data.signers.length > 0) {
                 data.signers.forEach((signer) => {
@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     signersContainer.appendChild(detailRow);
                 });
             } else {
-                // Aturan fallback jika field penandatangan kosong di database
+                // Aturan fallback otomatis jika field penandatangan kosong di database
                 const detailRow = document.createElement("div");
                 detailRow.className = "detail-row";
                 detailRow.innerHTML = `
@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Fungsi Kamera Scanner QR
     function startScanner() {
         html5QrCode = new Html5Qrcode("qr-reader");
-        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+        const config = { fps: 15, qrbox: { width: 250, height: 250 } }; // FPS 15 membuat pemindaian lebih responsif
         html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
             .catch(() => {
                 alert("Akses kamera ditolak atau tidak ditemukan.");
@@ -168,6 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
+    // Menghentikan Proses Scanner Kamera
     function stopScanner() {
         if (html5QrCode) {
             html5QrCode.stop().then(() => {
@@ -185,6 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // Aksi Sukses Saat Scanner Menemukan Data QR Code URL
     function onScanSuccess(decodedText) {
         stopScanner();
         let certId = decodedText;
@@ -201,6 +203,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function onScanFailure() {
-        // Callback silent saat kamera mencari QR Code
+        // Callback silent saat kamera melacak area QR Code
     }
 });
