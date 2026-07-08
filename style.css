@@ -570,3 +570,30 @@ button, .btn-success, .btn-primary, .btn-secondary {
         opacity: 0.2;
     }
 }
+
+/* Modifikasi agar Surat Keterangan lebih lega */
+.card-surat {
+    max-width: 750px !important; /* Dibuat lebih lebar dari sertifikat */
+}
+
+/* Memperluas tabel detail agar teks tidak berdesakan */
+.card-surat .details-table {
+    padding: 20px;
+}
+
+.card-surat .detail-row {
+    flex-direction: row; /* Teks label dan value sejajar ke samping agar hemat ruang vertikal */
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.card-surat .detail-label {
+    margin-bottom: 0;
+    width: 30%; /* Label diberi ruang 30% */
+}
+
+.card-surat .detail-value {
+    width: 65%; /* Value diberi ruang 65% */
+    text-align: right;
+}
