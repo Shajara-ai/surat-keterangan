@@ -110,12 +110,20 @@ document.addEventListener("DOMContentLoaded", () => {
         if (docKey && documentDatabase[docKey]) {
             const data = documentDatabase[docKey];
             
-            // Masukkan data dasar ke komponen HTML
+            // Mengambil nama Program Studi dari string activity menggunakan Regex (Fallback jika tidak dipisah)
+            let prodiNama = "-";
+            if (data.activity) {
+                const matchProdi = data.activity.match(/Program Studi\s+([^<]+)/i);
+                if (matchProdi) prodiNama = matchProdi[1].trim();
+            }
+
+            // Masukkan data dasar ke komponen HTML sesuai pesanan
             resName.textContent = data.name || "-";
-            resRole.textContent = data.role || "Mahasiswa Aktif";
-            resActivity.innerHTML = data.activity || "-"; // Mendukung render string berwujud tag <i> & <br>
-            resDate.textContent = data.date || "-";
-            resId.textContent = data.nomor || "-"; // Menampilkan Nomor Surat Keluar resmi
+            document.getElementById("res-nim").textContent = docKey; // Menampilkan NIM (Key JSON)
+            document.getElementById("res-prodi").textContent = prodiNama;
+            document.getElementById("res-perihal").textContent = data.perihal || "Keterangan Aktif Mahasiswa";
+            document.getElementById("res-ta").textContent = data.ta || "2025/2026";
+            resId.textContent = data.nomor || "-"; // Menampilkan Nomor Surat
             
             // Render Elemen Penandatangan secara dinamis
             signersContainer.innerHTML = "";
