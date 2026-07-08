@@ -1,4 +1,51 @@
-// FUNGSI VERIFIKASI UTAMA (VERSI BERSIH TANPA HASH)
+document.addEventListener("DOMContentLoaded", () => {
+    lucide.createIcons();
+
+    const viewHome = document.getElementById("view-home");
+    const viewSuccess = document.getElementById("view-result-success");
+    const viewFailed = document.getElementById("view-result-failed");
+    const inputCertId = document.getElementById("input-cert-id");
+    const btnVerify = document.getElementById("btn-verify");
+    const btnStartScan = document.getElementById("btn-start-scan");
+    const btnCloseScanner = document.getElementById("btn-close-scanner");
+    const btnBackList = document.querySelectorAll(".btn-back");
+    const scannerContainer = document.getElementById("scanner-container");
+
+    let html5QrCode = null;
+    let certificateDatabase = null;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const certIdParam = urlParams.get('id');
+
+    // Ambil database dengan bypass cache
+    fetch(`database.json?v=${new Date().getTime()}`, {
+        headers: {'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache', 'Expires': '0'}
+    })
+    .then(response => { if (!response.ok) throw new Error(); return response.json(); })
+    .then(data => {
+        certificateDatabase = data;
+        if (certIdParam) verifyCertificate(certIdParam.trim());
+        else showView("home");
+    })
+    .catch(() => { if (certIdParam) showView("failed"); else showView("home"); });
+
+    btnVerify.addEventListener("click", () => {
+        const certId = inputCertId.value.trim();
+        if (certId) window.location.href = `?id=${encodeURIComponent(certId)}`;
+    });
+
+    inputCertId.addEventListener("keypress", (e) => { if (e.key === "Enter") btnVerify.click(); });
+    btnBackList.forEach(btn => { btn.addEventListener("click", () => { window.location.href = window.location.pathname; }); });
+
+    btnStartScan.addEventListener("click", () => {
+        scannerContainer.classList.remove("hidden");
+        btnStartScan.classList.add("hidden");
+        startScanner();
+    });
+
+    btnCloseScanner.addEventListener("click", () => { stopScanner(); });
+
+    // FUNGSI VERIFIKASI UTAMA (BERSIH & DINAMIS TANPA HASH)
     function verifyCertificate(id) {
         if (!certificateDatabase) { showView("failed"); return; }
         const cleanId = id.trim().toUpperCase();
@@ -7,7 +54,7 @@
         if (certKey && certificateDatabase[certKey]) {
             const data = certificateDatabase[certKey];
             
-            // 1. Ambil Selector Elemen HTML Baru
+            // Selector Elemen HTML
             const resName = document.getElementById("res-name");
             const resId = document.getElementById("res-id");
             const resProdi = document.getElementById("res-prodi");
@@ -16,21 +63,21 @@
             const resNomorSurat = document.getElementById("res-nomor-surat");
             const resPenandatangan = document.getElementById("res-penandatangan");
 
-            // 2. Isi Data Nama, NIM, dan Tanggal Terbit
+            // Masukkan data dasar Nama, NIM, dan Tanggal Terbit
             if (resName) resName.textContent = data.name ? data.name.toUpperCase() : "-";
             if (resId) resId.textContent = certKey;
             if (resDate) resDate.textContent = data.date || "-";
             
-            // 3. Gabungkan Nomor Surat Resmi (Default pakai contoh format Anda jika kolom nomor di excel kosong)
+            // Penggabungan Nomor Surat Resmi Fakultas secara otomatis
             const nomorUrut = data.nomor || "042";
             if (resNomorSurat) resNomorSurat.textContent = `${nomorUrut}/FIKes-UF/BAAK/Ket-Mhsw/IV/2026`;
 
-            // 4. Set Nama Dekan Baru secara Langsung
+            // Set Nama Jabatan Dekan Aktif
             if (resPenandatangan) {
                 resPenandatangan.innerHTML = `Ahmad Jubaedi, SKM, MKM<br><small style="color: #64748b; font-weight: 400;">(Dekan FIKES - UF)</small>`;
             }
 
-            // 5. Memecah Isi Kolom Teks Aktivitas dari Excel secara Pintar
+            // Memecah isi Kolom Aktivitas dari Excel secara otomatis
             let rawActivity = data.activity || "";
             let prodiText = "Sarjana Keperawatan";
             let semesterText = "Semester IV / VIII";
@@ -53,3 +100,35 @@
             showView("failed");
         }
     }
+
+    function showView(v) {
+        viewHome.classList.add("hidden"); viewSuccess.classList.add("hidden"); viewFailed.classList.add("hidden");
+        if (v === "success") viewSuccess.classList.remove("hidden");
+        else if (v === "failed") viewFailed.classList.remove("hidden");
+        else viewHome.classList.remove("hidden");
+    }
+
+    function startScanner() {
+        html5QrCode = new Html5Qrcode("qr-reader");
+        html5QrCode.start({ facingMode: "environment" }, { fps: 15, qrbox: 250 }, onScanSuccess, () => {});
+    }
+
+    function stopScanner() {
+        if (html5QrCode) {
+            html5QrCode.stop().then(() => { scannerContainer.classList.add("hidden"); btnStartScan.classList.remove("hidden"); html5QrCode = null; });
+        }
+    }
+
+    function onScanSuccess(text) {
+        stopScanner();
+        let certId = text;
+        try {
+            if (text.startsWith("http")) {
+                const url = new URL(text);
+                const idParam = url.searchParams.get("id");
+                if (idParam) certId = idParam;
+            }
+        } catch (e) {}
+        window.location.href = `?id=${encodeURIComponent(certId.trim())}`;
+    }
+});
