@@ -8,95 +8,84 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnVerify = document.getElementById("btn-verify");
     const btnStartScan = document.getElementById("btn-start-scan");
     const btnCloseScanner = document.getElementById("btn-close-scanner");
-    const btnBackList = document.querySelectorAll(".btn-back");
     const scannerContainer = document.getElementById("scanner-container");
 
     let html5QrCode = null;
     let certificateDatabase = null;
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const certIdParam = urlParams.get('id');
-
-    // Ambil data JSON dengan menghindari cache browser
+    // 1. Ambil data JSON dengan menghindari cache browser
     fetch(`database.json?v=${new Date().getTime()}`, {
         headers: {'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache', 'Expires': '0'}
     })
     .then(response => { if (!response.ok) throw new Error(); return response.json(); })
     .then(data => {
         certificateDatabase = data;
+        const urlParams = new URLSearchParams(window.location.search);
+        const certIdParam = urlParams.get('id');
+        
         if (certIdParam) verifyCertificate(certIdParam.trim());
         else showView("home");
     })
-    .catch(() => { if (certIdParam) showView("failed"); else showView("home"); });
-
-    // Aksi tombol Verifikasi manual menggunakan Kode Surat
-    btnVerify.addEventListener("click", () => {
-        const certId = inputCertId.value.trim();
-        if (certId) window.location.href = `?id=${encodeURIComponent(certId)}`;
+    .catch(() => { 
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('id')) showView("failed"); 
+        else showView("home"); 
     });
 
-    inputCertId.addEventListener("keypress", (e) => { if (e.key === "Enter") btnVerify.click(); });
-    btnBackList.forEach(btn => { btn.addEventListener("click", () => { window.location.href = window.location.pathname; }); });
-
-    btnStartScan.addEventListener("click", () => {
-        scannerContainer.classList.remove("hidden");
-        btnStartScan.classList.add("hidden");
-        startScanner();
-    });
-
-    btnCloseScanner.addEventListener("click", () => { stopScanner(); });
-
-    // LOGIKA PENCARIAN & VERIFIKASI BERDASARKAN KODE/NOMOR SURAT
+    // 2. Logika Utama Verifikasi Dokumen
     function verifyCertificate(id) {
         if (!certificateDatabase) { showView("failed"); return; }
         
         const searchInput = id.trim().toUpperCase();
-        let targetData = null;
-        let nimKey = "-";
+        let targetKey = null;
 
-        // Mencari kecocokan kode surat pada properti "nomor" di dalam JSON
+        // Mencari data berdasarkan NIM (Key) atau Nilai "nomor" di dalam JSON
         for (const key in certificateDatabase) {
             const item = certificateDatabase[key];
-            const nomorSuratExcel = item.nomor ? String(item.nomor).trim().toUpperCase() : "";
+            const nomorUrutExcel = item.nomor ? String(item.nomor).trim().toUpperCase() : "";
             
-            if (nomorSuratExcel === searchInput || key.toUpperCase() === searchInput) {
-                targetData = item;
-                nimKey = key; // Mengambil NIM dari kata kunci utama objek JSON
+            if (key.toUpperCase() === searchInput || nomorUrutExcel === searchInput) {
+                targetKey = key;
                 break;
             }
         }
 
-        // Jika data ditemukan, masukkan data ke elemen HTML tabel sukses
-        if (targetData) {
-            const resName = document.getElementById("res-name");
-            const resId = document.getElementById("res-id");
-            const resProdi = document.getElementById("res-prodi");
-            const resNomorSurat = document.getElementById("res-nomor-surat");
-            const resPenandatangan = document.getElementById("res-penandatangan");
-
-            // 1. Set Nama dan NIM
-            if (resName) resName.textContent = targetData.name ? targetData.name.toUpperCase() : "-";
-            if (resId) resId.textContent = nimKey;
+        if (targetKey) {
+            const data = certificateDatabase[targetKey];
             
-            // 2. Set Format Nomor Surat Lengkap
-            const nomorUrut = targetData.nomor || searchInput;
-            if (resNomorSurat) resNomorSurat.textContent = `${nomorUrut}/FIKes-UF/BAAK/Ket-Mhsw/IV/2026`;
-
-            // 3. Set Nama Dekan FIKES yang Baru
-            if (resPenandatangan) {
-                resPenandatangan.innerHTML = `Ahmad Jubaedi, SKM, MKM <br><span style="font-size:0.75rem; color:#64748b; font-weight:400;">(Dekan FIKES - UF)</span>`;
+            // Atur lebar kartu dinamis jika tipenya 'surat'
+            if (data.type === "surat") {
+                viewSuccess.classList.add("card-surat");
+            } else {
+                viewSuccess.classList.remove("card-surat");
             }
 
-            // 4. Memecah isi Kolom Aktivitas Excel untuk Mengambil Nama Program Studi
-            let rawActivity = targetData.activity || "";
+            // Isi Data Personal Ke HTML
+            document.getElementById("res-name").textContent = data.name ? data.name.toUpperCase() : "-";
+            document.getElementById("res-id").textContent = targetKey;
+            
+            // Ambil nama Program Studi
             let prodiText = "Sarjana Keperawatan";
-
-            if (rawActivity.includes("Program Studi")) {
-                let parts = rawActivity.split("Program Studi");
+            if (data.activity && data.activity.includes("Program Studi")) {
+                let parts = data.activity.split("Program Studi");
                 if (parts[1]) prodiText = parts[1].split("Tahun")[0].replace("<br>", "").trim();
             }
+            document.getElementById("res-prodi").textContent = prodiText;
 
-            if (resProdi) resProdi.textContent = prodiText;
+            // Pengisian Baris Baru: Perihal & Tahun Akademik Langsung Dari JSON
+            document.getElementById("res-perihal").textContent = data.perihal || "Keterangan Aktif Mahasiswa";
+            document.getElementById("res-ta").textContent = data.ta || "2025/2026";
+            
+            // Format Pengisian Nomor Surat (Bersih dari NIM Terpaut)
+            let nomor = String(data.nomor || searchInput);
+            if (nomor.includes('/')) {
+                const parts = nomor.split('/');
+                nomor = parts[0].length > 10 ? parts.slice(1).join('/') : nomor;
+            }
+            document.getElementById("res-nomor-surat").textContent = `${nomor}/FIKes-UF/BAAK/Ket-Mhsw/IV/2026`;
+
+            // Tampilkan Penandatangan Terkini
+            document.getElementById("res-penandatangan").innerHTML = `Ahmad Jubaedi, SKM, MKM <br><span style="font-size:0.75rem; color:#64748b; font-weight:400;">(Dekan FIKES - UF)</span>`;
 
             showView("success");
             lucide.createIcons();
@@ -105,12 +94,34 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // 3. Kontrol Tampilan (Views)
     function showView(v) {
-        viewHome.classList.add("hidden"); viewSuccess.classList.add("hidden"); viewFailed.classList.add("hidden");
+        [viewHome, viewSuccess, viewFailed].forEach(el => el.classList.add("hidden"));
         if (v === "success") viewSuccess.classList.remove("hidden");
         else if (v === "failed") viewFailed.classList.remove("hidden");
         else viewHome.classList.remove("hidden");
     }
+
+    // 4. Peristiwa Aksi (Event Listeners)
+    btnVerify.addEventListener("click", () => {
+        const certId = inputCertId.value.trim();
+        if (certId) window.location.href = `?id=${encodeURIComponent(certId)}`;
+    });
+
+    inputCertId.addEventListener("keypress", (e) => { if (e.key === "Enter") btnVerify.click(); });
+    
+    document.querySelectorAll(".btn-back").forEach(btn => { 
+        btn.addEventListener("click", () => { window.location.href = window.location.pathname; }); 
+    });
+
+    // Kontrol Pemindai Kamera QR
+    btnStartScan.addEventListener("click", () => {
+        scannerContainer.classList.remove("hidden");
+        btnStartScan.classList.add("hidden");
+        startScanner();
+    });
+
+    btnCloseScanner.addEventListener("click", () => { stopScanner(); });
 
     function startScanner() {
         html5QrCode = new Html5Qrcode("qr-reader");
@@ -119,7 +130,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function stopScanner() {
         if (html5QrCode) {
-            html5QrCode.stop().then(() => { scannerContainer.classList.add("hidden"); btnStartScan.classList.remove("hidden"); html5QrCode = null; });
+            html5QrCode.stop().then(() => { 
+                scannerContainer.classList.add("hidden"); 
+                btnStartScan.classList.remove("hidden"); 
+                html5QrCode = null; 
+            });
         }
     }
 
