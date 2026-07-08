@@ -14,37 +14,5 @@
         "role": ""
       }
     ]
-  },
-  "1440125041003": {
-    "name": "AKBAR ILMI BILAMANDA",
-    "role": "Mahasiswa Aktif",
-    "activity": "Program Studi Diploma III Keperawatan",
-    "date": "8 Juli 2026",
-    "type": "surat",
-    "perihal": "Keterangan Aktif Mahasiswa",
-    "ta": "2025/2026",
-    "nomor": "2916",
-    "signers": [
-      {
-        "name": "Ahmad Jubaedi, SKM, MKM",
-        "role": ""
-      }
-    ]
-  },
-  "1590125031172": {
-    "name": "RONI",
-    "role": "Mahasiswa Aktif",
-    "activity": "Program Studi Pendidikan Profesi Bidan",
-    "date": "8 Juli 2026",
-    "type": "surat",
-    "perihal": "Keterangan Aktif Mahasiswa",
-    "ta": "2025/2026",
-    "nomor": "2930",
-    "signers": [
-      {
-        "name": "Ahmad Jubaedi, SKM, MKM",
-        "role": ""
-      }
-    ]
   }
 }
