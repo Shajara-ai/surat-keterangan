@@ -17,7 +17,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     const certIdParam = urlParams.get('id');
 
-    // Ambil database dengan bypass cache
     fetch(`database.json?v=${new Date().getTime()}`, {
         headers: {'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache', 'Expires': '0'}
     })
@@ -45,16 +44,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     btnCloseScanner.addEventListener("click", () => { stopScanner(); });
 
-    // FUNGSI VERIFIKASI UTAMA (BERSIH & DINAMIS TANPA HASH)
     function verifyCertificate(id) {
         if (!certificateDatabase) { showView("failed"); return; }
         const cleanId = id.trim().toUpperCase();
         const certKey = Object.keys(certificateDatabase).find(key => key.trim().toUpperCase() === cleanId);
 
-        if (certKey && certificateDatabase[certKey]) {
-            const data = certificateDatabase[certKey];
+        if (certKey && certificateDatabase[cleanId]) {
+            const data = certificateDatabase[cleanId];
             
-            // Selector Elemen HTML
             const resName = document.getElementById("res-name");
             const resId = document.getElementById("res-id");
             const resProdi = document.getElementById("res-prodi");
@@ -63,21 +60,17 @@ document.addEventListener("DOMContentLoaded", () => {
             const resNomorSurat = document.getElementById("res-nomor-surat");
             const resPenandatangan = document.getElementById("res-penandatangan");
 
-            // Masukkan data dasar Nama, NIM, dan Tanggal Terbit
             if (resName) resName.textContent = data.name ? data.name.toUpperCase() : "-";
-            if (resId) resId.textContent = certKey;
+            if (resId) resId.textContent = cleanId;
             if (resDate) resDate.textContent = data.date || "-";
             
-            // Penggabungan Nomor Surat Resmi Fakultas secara otomatis
             const nomorUrut = data.nomor || "042";
             if (resNomorSurat) resNomorSurat.textContent = `${nomorUrut}/FIKes-UF/BAAK/Ket-Mhsw/IV/2026`;
 
-            // Set Nama Jabatan Dekan Aktif
             if (resPenandatangan) {
-                resPenandatangan.innerHTML = `Ahmad Jubaedi, SKM, MKM<br><small style="color: #64748b; font-weight: 400;">(Dekan FIKES - UF)</small>`;
+                resPenandatangan.innerHTML = `Ahmad Jubaedi, SKM, MKM <br><span style="font-size:0.75rem; color:#64748b; font-weight:400;">(Dekan FIKES - UF)</span>`;
             }
 
-            // Memecah isi Kolom Aktivitas dari Excel secara otomatis
             let rawActivity = data.activity || "";
             let prodiText = "Sarjana Keperawatan";
             let semesterText = "Semester IV / VIII";
