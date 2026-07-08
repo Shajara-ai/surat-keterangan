@@ -125,39 +125,25 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("res-ta").textContent = data.ta || "2025/2026";
             resId.textContent = data.nomor || "-"; // Menampilkan Nomor Surat
             
-            // Render Elemen Penandatangan secara dinamis
+            // Render Elemen Penandatangan secara dinamis (Flat & Bersih tanpa embel-embel UF)
             signersContainer.innerHTML = "";
             if (data.signers && Array.isArray(data.signers) && data.signers.length > 0) {
                 data.signers.forEach((signer) => {
-                    const signerCard = document.createElement("div");
-                    signerCard.className = "signer-card";
-                    
                     const labelRole = signer.role || "Pejabat Berwenang";
                     const signerName = signer.name || "-";
                     
-                    signerCard.innerHTML = `
-                        <div class="signer-name">${signerName}</div>
-                        <div class="signer-role">${labelRole}</div>
+                    signersContainer.innerHTML += `
+                        <div class="font-semibold text-slate-100">${signerName}</div>
+                        <div class="text-sm text-slate-400 mt-0.5">${labelRole}</div>
                     `;
-                    signersContainer.appendChild(signerCard);
                 });
             } else {
-                // Aturan fallback jika data penandatangan kosong di database.json
-                const signerCard = document.createElement("div");
-                signerCard.className = "signer-card";
-                signerCard.innerHTML = `
-                    <div class="signer-name">Ahmad Jubaedi, SKM, MKM</div>
-                    <div class="signer-role">Dekan FIKES - UF</div>
+                // Fallback murni nama Pejabat tanpa teks tambahan
+                signersContainer.innerHTML = `
+                    <div class="font-semibold text-slate-100">Ahmad Jubaedi, SKM, MKM</div>
+                    <div class="text-sm text-slate-400 mt-0.5">Dekan FIKes</div>
                 `;
-                signersContainer.appendChild(signerCard);
             }
-
-            showView("success");
-        } else {
-            showView("failed");
-        }
-    }
-
     // Navigasi Tampilan Kartu Sistem (View Switcher)
     function showView(viewName) {
         viewHome.classList.add("hidden");
