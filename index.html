@@ -83,7 +83,21 @@
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Nomor Surat</span>
-                    <span class="detail-value font-mono text-slate-100" id="res-nomor-surat" style="overflow: hidden; display: inline-block; max-width: 100%; text-overflow: ellipsis;">-</span>
+                    <span class="detail-value font-mono text-slate-100" id="res-nomor-surat">-</span>
+                    <script>
+                        // Script ini akan berjalan setelah halaman dimuat untuk membersihkan NIM dari teks nomor surat
+                        const interval = setInterval(() => {
+                            const el = document.getElementById('res-nomor-surat');
+                            if (el && el.textContent.includes('/')) {
+                                const parts = el.textContent.split('/');
+                                // Jika bagian pertama adalah angka panjang (NIM), kita ambil bagian setelahnya saja
+                                if (parts[0].length > 10) {
+                                    el.textContent = parts.slice(1).join('/');
+                                }
+                                clearInterval(interval);
+                            }
+                        }, 100);
+                    </script>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Penandatangan</span>
