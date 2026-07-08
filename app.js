@@ -125,24 +125,25 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("res-ta").textContent = data.ta || "2025/2026";
             resId.textContent = data.nomor || "-"; // Menampilkan Nomor Surat
             
-            // Render Elemen Penandatangan secara dinamis (Hanya Nama, Tanpa Jabatan)
+            // Render Elemen Penandatangan secara dinamis (Flat & Bersih tanpa embel-embel UF)
             signersContainer.innerHTML = "";
             if (data.signers && Array.isArray(data.signers) && data.signers.length > 0) {
                 data.signers.forEach((signer) => {
+                    const labelRole = signer.role || "Pejabat Berwenang";
                     const signerName = signer.name || "-";
                     
-                    // Hanya menampilkan nama dengan format flat dan bersih
                     signersContainer.innerHTML += `
                         <div class="font-semibold text-slate-100">${signerName}</div>
+                        <div class="text-sm text-slate-400 mt-0.5">${labelRole}</div>
                     `;
                 });
             } else {
-                // Fallback murni hanya nama saja
+                // Fallback murni nama Pejabat tanpa teks tambahan
                 signersContainer.innerHTML = `
                     <div class="font-semibold text-slate-100">Ahmad Jubaedi, SKM, MKM</div>
+                    <div class="text-sm text-slate-400 mt-0.5">Dekan FIKes</div>
                 `;
             }
-            
     // Navigasi Tampilan Kartu Sistem (View Switcher)
     function showView(viewName) {
         viewHome.classList.add("hidden");
