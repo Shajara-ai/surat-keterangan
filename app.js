@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("res-nomor-surat").textContent = `${nomor}/FIKes-UF/BAAK/Ket-Mhsw/IV/2026`;
 
             // Tampilkan Penandatangan Terkini
-            document.getElementById("res-penandatangan").innerHTML = `Ahmad Jubaedi, SKM, MKM <br><span style="font-size:0.75rem; color:#64748b; font-weight:400;">(Dekan FIKES - UF)</span>`;
+            document.getElementById("res-penandatangan").textContent = `Ahmad Jubaedi, SKM, MKM`;
 
             showView("success");
             lucide.createIcons();
