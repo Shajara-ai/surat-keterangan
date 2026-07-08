@@ -1,50 +1,126 @@
-<section id="view-result-success" class="card result-card success hidden fade-in">
-    <div class="success-badge-wrapper">
-        <div class="badge-glow"></div>
-        <div class="success-icon-box"><i data-lucide="shield-check" class="success-icon"></i></div>
-    </div>
-    
-    <div class="verification-status text-emerald">Dokumen Terverifikasi Resmi</div>
-    <p class="verification-time">Arsip digital dinyatakan Valid, Sah, & Sesuai dengan database universitas.</p>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Surat Digital | FIKES - UF</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
 
-    <div class="details-table" style="gap: 12px;">
-        <div class="detail-row">
-            <span class="detail-label">Nama</span>
-            <span class="detail-value font-semibold" id="res-name" style="letter-spacing: 0.01em;">-</span>
-        </div>
-        <div class="detail-row">
-            <span class="detail-label">NIM</span>
-            <span class="detail-value font-mono" id="res-id" style="font-weight: 600;">-</span>
-        </div>
-        <div class="detail-row">
-            <span class="detail-label">Program Studi</span>
-            <span class="detail-value" id="res-prodi">-</span>
-        </div>
-        <div class="detail-row">
-            <span class="detail-label">Semester / Akademik</span>
-            <span class="detail-value" id="res-semester" style="text-align: right;">-</span>
-        </div>
-        <div class="detail-row">
-            <span class="detail-label">Tanggal Terbit</span>
-            <span class="detail-value" id="res-date">-</span>
-        </div>
-        <div class="detail-row" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; margin-top: 2px;">
-            <span class="detail-label">Nomor Surat</span>
-            <span class="detail-value font-mono" id="res-nomor-surat" style="font-size: 0.8rem; text-align: right; color: #94a3b8;">-</span>
-        </div>
-        <div class="detail-row">
-            <span class="detail-label">Penandatangan</span>
-            <span class="detail-value font-semibold" id="res-penandatangan" style="text-align: right; line-height: 1.4;">-</span>
-        </div>
-    </div>
+    <main class="container">
+        <header class="header">
+            <div class="logo-container">
+                <img src="logo_2.png" alt="Logo FIKES" class="logo-icon">
+                <div class="logo-text">
+                    <span class="brand-title">FAKULTAS ILMU KESEHATAN</span>
+                    <span class="brand-title">UNIVERSITAS FALETEHAN</span>
+                    <span class="brand-subtitle">Verification System</span>
+                </div>
+            </div>
+        </header>
 
-    <div class="disclaimer-box" style="margin-top: 15px; padding: 12px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.03); border-left: 4px solid #10b981; border-radius: 6px;">
-        <p style="margin: 0; color: #64748b; font-size: 0.7rem; line-height: 1.5; text-align: justify;">
-            Halaman ini merupakan media legalisasi data digital resmi Fakultas Ilmu Kesehatan Universitas Faletehan. Dokumen dinyatakan sah dan terverifikasi langsung melalui database akademik.
-        </p>
-    </div>
+        <section id="view-home" class="card fade-in">
+            <h1 class="card-title">Verifikasi Surat Digital</h1>
+            <p class="card-desc">Pindai QR code pada surat atau masukkan NIM di bawah ini untuk memeriksa keaslian dokumen resmi.</p>
 
-    <div class="action-buttons">
-        <button class="btn-text btn-back"><i data-lucide="arrow-left" class="btn-icon"></i> Kembali</button>
-    </div>
-</section>
+            <div class="search-box">
+                <input type="text" id="input-cert-id" placeholder="Masukkan NIM Mahasiswa" autocomplete="off">
+                <button id="btn-verify" class="btn-primary">
+                    <i data-lucide="search" class="btn-icon"></i> Verifikasi
+                </button>
+            </div>
+
+            <div class="divider"><span>atau</span></div>
+
+            <button id="btn-start-scan" class="btn-secondary">
+                <i data-lucide="qr-code" class="btn-icon"></i> Pindai QR Code Dokumen
+            </button>
+
+            <div id="scanner-container" class="scanner-box hidden">
+                <div class="scanner-header">
+                    <h3>Memindai QR Code...</h3>
+                    <button id="btn-close-scanner" class="btn-icon-only"><i data-lucide="x"></i></button>
+                </div>
+                <div class="scanner-wrapper">
+                    <div id="qr-reader"></div>
+                    <div class="scanner-laser"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-result-success" class="card result-card success hidden fade-in">
+            <div class="success-badge-wrapper">
+                <div class="badge-glow"></div>
+                <div class="success-icon-box"><i data-lucide="shield-check" class="success-icon"></i></div>
+            </div>
+            
+            <div class="verification-status text-emerald">Dokumen Terverifikasi Resmi</div>
+            <p class="verification-time">Arsip digital dinyatakan Valid, Sah, & Sesuai dengan database universitas.</p>
+
+            <div class="details-table" style="gap: 12px;">
+                <div class="detail-row">
+                    <span class="detail-label">Nama</span>
+                    <span class="detail-value font-semibold" id="res-name" style="letter-spacing: 0.01em;">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">NIM</span>
+                    <span class="detail-value font-mono" id="res-id" style="font-weight: 600;">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Program Studi</span>
+                    <span class="detail-value" id="res-prodi">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Semester / Akademik</span>
+                    <span class="detail-value" id="res-semester" style="text-align: right;">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Tanggal Terbit</span>
+                    <span class="detail-value" id="res-date">-</span>
+                </div>
+                <div class="detail-row" style="border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; margin-top: 2px;">
+                    <span class="detail-label">Nomor Surat</span>
+                    <span class="detail-value font-mono" id="res-nomor-surat" style="font-size: 0.8rem; text-align: right; color: #94a3b8;">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Penandatangan</span>
+                    <span class="detail-value font-semibold" id="res-penandatangan" style="text-align: right; line-height: 1.4;">-</span>
+                </div>
+            </div>
+
+            <div class="disclaimer-box" style="margin-top: 15px; padding: 12px; background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.03); border-left: 4px solid #10b981; border-radius: 6px;">
+                <p style="margin: 0; color: #64748b; font-size: 0.7rem; line-height: 1.5; text-align: justify;">
+                    Halaman ini merupakan media legalisasi data digital resmi Fakultas Ilmu Kesehatan Universitas Faletehan. Dokumen dinyatakan sah dan terverifikasi langsung melalui database akademik.
+                </p>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-text btn-back"><i data-lucide="arrow-left" class="btn-icon"></i> Kembali</button>
+            </div>
+        </section>
+
+        <section id="view-result-failed" class="card result-card failed hidden fade-in">
+            <div class="failed-icon-box"><i data-lucide="alert-triangle" class="failed-icon"></i></div>
+            <div class="verification-status text-rose">Dokumen Tidak Valid</div>
+            <p class="verification-time">Nomor identitas dokumen / NIM tidak ditemukan pada server.</p>
+            <div class="action-buttons">
+                <button class="btn-primary btn-back"><i data-lucide="arrow-left" class="btn-icon"></i> Coba Lagi</button>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>&copy; 2026 Fakultas Ilmu Kesehatan - Universitas Faletehan. All rights reserved.</p>
+        </footer>
+    </main>
+
+    <script src="https://unpkg.com/html5-qrcode"></script>
+    <script src="app.js"></script>
+</body>
+</html>
