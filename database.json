@@ -2,14 +2,16 @@
   "1022031237": {
     "name": "USWATUN HASANAH",
     "role": "Mahasiswa Aktif",
-    "activity": "Surat Keterangan Aktif Kuliah Semester IV / VIII <br>Program Studi Sarjana Keperawatan Tahun Akademik 2026/2027",
+    "activity": "Surat Keterangan Aktif Kuliah Semester IV / VIII <br>Program Studi Sarjana Keperawatan Tahun Akademik 2025/2026",
     "date": "8 Juli 2026",
     "type": "surat",
+    "perihal": "Keterangan Aktif Mahasiswa",
+    "ta": "2025/2026",
     "nomor": "2909",
     "signers": [
       {
         "role": "Dekan FIKES - UF",
-        "name": "Prof. Dr. dr. Siti Aminah, M.Kes"
+        "name": "Ahmad Jubaedi, SKM, MKM"
       }
     ]
   }
