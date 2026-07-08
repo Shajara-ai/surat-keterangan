@@ -1,55 +1,206 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Ambil parameter '?id=...' (NIM) dari URL browser hasil scan QR
+    // Inisialisasi ikon dari Lucide
+    lucide.createIcons();
+
+    // DOM Elemen Utama
+    const viewHome = document.getElementById("view-home");
+    const viewSuccess = document.getElementById("view-result-success");
+    const viewFailed = document.getElementById("view-result-failed");
+
+    const inputCertId = document.getElementById("input-cert-id");
+    const btnVerify = document.getElementById("btn-verify");
+    const btnStartScan = document.getElementById("btn-start-scan");
+    const btnCloseScanner = document.getElementById("btn-close-scanner");
+    const btnBackList = document.querySelectorAll(".btn-back");
+    const scannerContainer = document.getElementById("scanner-container");
+
+    // Elemen Pengisi Data Detail Keberhasilan
+    const resName = document.getElementById("res-name");
+    const resRole = document.getElementById("res-role");
+    const resActivity = document.getElementById("res-activity");
+    const resDate = document.getElementById("res-date");
+    const resId = document.getElementById("res-id");
+    const signersContainer = document.getElementById("signers-container");
+
+    let html5QrCode = null;
+    let certificateDatabase = null;
+
+    // Ambil parameter dari URL (?id=CERT-XXX)
     const urlParams = new URLSearchParams(window.location.search);
-    const certId = urlParams.get('id');
+    const certIdParam = urlParams.get('id');
 
-    // Elemen HTML penampung status dan data
-    const loadingEl = document.getElementById("loading");
-    const successView = document.getElementById("view-success");
-    const failedView = document.getElementById("view-failed");
+    // ⚡ BYPASS CACHE STRATEGY: Memaksa browser mengambil data paling baru langsung dari server GitHub
+    fetch(`database.json?v=${new Date().getTime()}`, {
+        headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Gagal memuat berkas database.json");
+        return response.json();
+    })
+    .then(data => {
+        certificateDatabase = data;
+        // Jika ada parameter ID di URL, langsung lakukan verifikasi otomatis
+        if (certIdParam) {
+            verifyCertificate(certIdParam.trim());
+        } else {
+            showView("home");
+        }
+    })
+    .catch(error => {
+        console.error("Kesalahan memuat database:", error);
+        if (certIdParam) showView("failed");
+        else showView("home");
+    });
 
-    // Jika tidak ada ID di URL, langsung tampilkan status tidak valid
-    if (!certId) {
-        if (loadingEl) loadingEl.classList.add("hidden");
-        if (failedView) failedView.classList.remove("hidden");
-        return;
+    // Event Listener Tombol Verifikasi Manual
+    btnVerify.addEventListener("click", () => {
+        const certId = inputCertId.value.trim();
+        if (certId) {
+            window.location.href = `?id=${encodeURIComponent(certId)}`;
+        } else {
+            alert("Silakan masukkan Nomor Sertifikat terlebih dahulu.");
+        }
+    });
+
+    inputCertId.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") btnVerify.click();
+    });
+
+    // Event Listener Tombol Kembali
+    btnBackList.forEach(btn => {
+        btn.addEventListener("click", () => {
+            window.location.href = window.location.pathname;
+        });
+    });
+
+    // Event Listener Kamera/Scanner
+    btnStartScan.addEventListener("click", () => {
+        scannerContainer.classList.remove("hidden");
+        btnStartScan.classList.add("hidden");
+        startScanner();
+    });
+
+    btnCloseScanner.addEventListener("click", () => {
+        stopScanner();
+    });
+
+    // Fungsi Utama Verifikasi Sertifikat
+    function verifyCertificate(id) {
+        if (!certificateDatabase) {
+            showView("failed");
+            return;
+        }
+
+        // Antisipasi ketidakcocokan huruf besar/kecil dari input URL
+        const cleanId = id.trim().toUpperCase();
+
+        // Cari Key di database secara Case-Insensitive
+        const certKey = Object.keys(certificateDatabase).find(
+            key => key.trim().toUpperCase() === cleanId
+        );
+
+        if (certKey && certificateDatabase[certKey]) {
+            const data = certificateDatabase[certKey];
+            
+            // Masukkan data dasar ke HTML
+            resName.textContent = data.name || "-";
+            resRole.textContent = data.role || "Peserta";
+            resActivity.innerHTML = data.activity || "-"; // Mendukung render tag <i> otomatis
+            resDate.textContent = data.date || "-";
+            resId.textContent = certKey;
+            
+            // Loop data Penandatangan secara dinamis berdasarkan data JSON
+            signersContainer.innerHTML = "";
+            if (data.signers && Array.isArray(data.signers) && data.signers.length > 0) {
+                data.signers.forEach((signer) => {
+                    const detailRow = document.createElement("div");
+                    detailRow.className = "detail-row";
+                    
+                    const labelText = signer.role || "Penandatangan";
+                    const signerName = signer.name || "-";
+                    
+                    detailRow.innerHTML = `
+                        <span class="detail-label">${labelText}</span>
+                        <span class="detail-value font-medium text-slate-200">${signerName}</span>
+                    `;
+                    signersContainer.appendChild(detailRow);
+                });
+            } else {
+                // Aturan fallback jika field penandatangan kosong di database
+                const detailRow = document.createElement("div");
+                detailRow.className = "detail-row";
+                detailRow.innerHTML = `
+                    <span class="detail-label">Dekan FIKES - UF</span>
+                    <span class="detail-value font-medium text-slate-200">Prof. Dr. dr. Siti Aminah, M.Kes</span>
+                `;
+                signersContainer.appendChild(detailRow);
+            }
+
+            showView("success");
+        } else {
+            showView("failed");
+        }
     }
 
-    // 2. Ambil data secara real-time dari database.json
-    // Ditambahkan parameter nocache agar browser HP tidak menyimpan memori lama (selalu ambil data terbaru)
-    fetch('database.json?nocache=' + new Date().getTime())
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Gagal memuat database.");
+    // Navigasi View Kartu Tampilan
+    function showView(viewName) {
+        viewHome.classList.add("hidden");
+        viewSuccess.classList.add("hidden");
+        viewFailed.classList.add("hidden");
+
+        if (viewName === "success") viewSuccess.classList.remove("hidden");
+        else if (viewName === "failed") viewFailed.classList.remove("hidden");
+        else viewHome.classList.remove("hidden");
+    }
+
+    // Fungsi Kamera Scanner QR
+    function startScanner() {
+        html5QrCode = new Html5Qrcode("qr-reader");
+        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+        html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
+            .catch(() => {
+                alert("Akses kamera ditolak atau tidak ditemukan.");
+                stopScanner();
+            });
+    }
+
+    function stopScanner() {
+        if (html5QrCode) {
+            html5QrCode.stop().then(() => {
+                scannerContainer.classList.add("hidden");
+                btnStartScan.classList.remove("hidden");
+                html5QrCode = null;
+            }).catch(() => {
+                scannerContainer.classList.add("hidden");
+                btnStartScan.classList.remove("hidden");
+                html5QrCode = null;
+            });
+        } else {
+            scannerContainer.classList.add("hidden");
+            btnStartScan.classList.remove("hidden");
+        }
+    }
+
+    function onScanSuccess(decodedText) {
+        stopScanner();
+        let certId = decodedText;
+        try {
+            if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
+                const url = new URL(decodedText);
+                const idParam = url.searchParams.get("id");
+                if (idParam) certId = idParam;
             }
-            return response.json();
-        })
-        .then(data => {
-            if (loadingEl) loadingEl.classList.add("hidden");
-            
-            // 3. Cari data berdasarkan NIM (menghindari masalah spasi tak sengaja)
-            const targetKey = Object.keys(data).find(key => key.trim().toLowerCase() === certId.trim().toLowerCase());
-            
-            if (targetKey) {
-                const mhs = data[targetKey];
-                
-                // 4. Masukkan data ke elemen HTML sesuai variabel camelCase database Anda
-                document.getElementById("res-nama").textContent = mhs.nama || "-";
-                document.getElementById("res-nim").textContent = mhs.nim || "-";
-                document.getElementById("res-prodi").textContent = mhs.programStudi || "-";
-                document.getElementById("res-semester").textContent = mhs.jenisKelas || "-"; // Menampilkan tipe kelas (Reguler/Nonreg)
-                document.getElementById("res-id").textContent = mhs.nomorSurat || "-"; // Menampilkan Nomor Surat
-                
-                // Tampilkan container sukses (Dokumen Asli)
-                if (successView) successView.classList.remove("hidden");
-            } else {
-                // Jika NIM tidak ditemukan di dalam database.json
-                if (failedView) failedView.classList.remove("hidden");
-            }
-        })
-        .catch(err => {
-            console.error("Error:", err);
-            if (loadingEl) loadingEl.classList.add("hidden");
-            if (failedView) failedView.classList.remove("hidden");
-        });
+        } catch (e) {
+            console.error("Gagal memproses URL QR Code:", e);
+        }
+        window.location.href = `?id=${encodeURIComponent(certId.trim())}`;
+    }
+
+    function onScanFailure() {
+        // Callback silent saat kamera mencari QR Code
+    }
 });
