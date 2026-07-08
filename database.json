@@ -1,29 +1,62 @@
 {
-  "1022031237": {
-    "nama": "Uswatun Hasanah",
+  "2909": {
+    "name": "Uswatun Hasanah",
     "nim": "1022031237",
-    "programStudi": "Sarjana Keperawatan",
-    "jenisKelas": "REGULER",
-    "statusAktif": "Aktif Dokumen Sah",
-    "nomorSurat": "2909",
-    "tanggalSurat": "7 Juli 2026"
+    "prodi": "Sarjana Keperawatan",
+    "semester": "IV / VIII",
+    "kodeSurat": "/FIKes-UF/BAAK/Ket-Mhsw/",
+    "date": "06 April 2026",
+    "pdfUrl": "https://shajara-ai.github.io/surat-keterangan/pdf/2909.pdf",
+    "signers": [
+      {
+        "name": "Prof. Dr. dr. Siti Aminah, M.Kes",
+        "role": "Dekan FIKES - UF"
+      }
+    ]
   },
-  "1440125041003": {
-    "nama": "Akbar Ilmi Bilamanda",
+  "2916": {
+    "name": "Akbar Ilmi Bilamanda",
     "nim": "1440125041003",
-    "programStudi": "Diploma III Keperawatan",
-    "jenisKelas": "REGULER",
-    "statusAktif": "Aktif Dokumen Sah",
-    "nomorSurat": "2916",
-    "tanggalSurat": "07 July 2026"
+    "prodi": "Diploma III Keperawatan",
+    "semester": "I / II",
+    "kodeSurat": "/FIKes-UF/BAAK/Ket-Mhsw/",
+    "date": "06 April 2026",
+    "pdfUrl": "https://shajara-ai.github.io/surat-keterangan/pdf/2916.pdf",
+    "signers": [
+      {
+        "name": "Prof. Dr. dr. Siti Aminah, M.Kes",
+        "role": "Dekan FIKES - UF"
+      }
+    ]
   },
-  "1590125031172": {
-    "nama": "roni",
+  "2923": {
+    "name": "Ratna Fitriyani",
     "nim": "1590125031172",
-    "programStudi": "Pendidikan Profesi Bidan",
-    "jenisKelas": "REGULER",
-    "statusAktif": "Aktif Dokumen Sah",
-    "nomorSurat": "2930",
-    "tanggalSurat": "07 July 2026"
+    "prodi": "Pendidikan Profesi Bidan",
+    "semester": "None",
+    "kodeSurat": "/FIKes-UF/BAAK/Ket-Mhsw/",
+    "date": "09 April 2026",
+    "pdfUrl": "https://shajara-ai.github.io/surat-keterangan/pdf/2923.pdf",
+    "signers": [
+      {
+        "name": "Prof. Dr. dr. Siti Aminah, M.Kes",
+        "role": "Dekan FIKES - UF"
+      }
+    ]
+  },
+  "2930": {
+    "name": "roni",
+    "nim": "1590125031172",
+    "prodi": "Pendidikan Profesi Bidan",
+    "semester": "None",
+    "kodeSurat": "/FIKes-UF/BAAK/Ket-Mhsw/",
+    "date": "09 April 2026",
+    "pdfUrl": "https://shajara-ai.github.io/surat-keterangan/pdf/2930.pdf",
+    "signers": [
+      {
+        "name": "Prof. Dr. dr. Siti Aminah, M.Kes",
+        "role": "Dekan FIKES - UF"
+      }
+    ]
   }
 }
