@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     const certIdParam = urlParams.get('id');
 
-    // Ambil data JSON dengan menghindari cache browser
+    // Ambil data database
     fetch(`database.json?v=${new Date().getTime()}`, {
         headers: {'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache', 'Expires': '0'}
     })
@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", () => {
     })
     .catch(() => { if (certIdParam) showView("failed"); else showView("home"); });
 
-    // Aksi tombol Verifikasi manual menggunakan Kode Surat
     btnVerify.addEventListener("click", () => {
         const certId = inputCertId.value.trim();
         if (certId) window.location.href = `?id=${encodeURIComponent(certId)}`;
@@ -46,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     btnCloseScanner.addEventListener("click", () => { stopScanner(); });
 
-    // LOGIKA PENCARIAN & VERIFIKASI BERDASARKAN KODE/NOMOR SURAT
+    // FUNGSI VERIFIKASI DENGAN LOGIKA NOMOR SURAT BERSIH
     function verifyCertificate(id) {
         if (!certificateDatabase) { showView("failed"); return; }
         
@@ -54,19 +53,17 @@ document.addEventListener("DOMContentLoaded", () => {
         let targetData = null;
         let nimKey = "-";
 
-        // Mencari kecocokan kode surat pada properti "nomor" di dalam JSON
         for (const key in certificateDatabase) {
             const item = certificateDatabase[key];
             const nomorSuratExcel = item.nomor ? String(item.nomor).trim().toUpperCase() : "";
             
             if (nomorSuratExcel === searchInput || key.toUpperCase() === searchInput) {
                 targetData = item;
-                nimKey = key; // Mengambil NIM dari kata kunci utama objek JSON
+                nimKey = key;
                 break;
             }
         }
 
-        // Jika data ditemukan, masukkan data ke elemen HTML tabel sukses
         if (targetData) {
             const resName = document.getElementById("res-name");
             const resId = document.getElementById("res-id");
@@ -74,20 +71,19 @@ document.addEventListener("DOMContentLoaded", () => {
             const resNomorSurat = document.getElementById("res-nomor-surat");
             const resPenandatangan = document.getElementById("res-penandatangan");
 
-            // 1. Set Nama dan NIM
             if (resName) resName.textContent = targetData.name ? targetData.name.toUpperCase() : "-";
             if (resId) resId.textContent = nimKey;
             
-            // 2. Set Format Nomor Surat Lengkap
-            const nomorUrut = targetData.nomor || searchInput;
-            if (resNomorSurat) resNomorSurat.textContent = `${nomorUrut}/FIKes-UF/BAAK/Ket-Mhsw/IV/2026`;
+            // LOGIKA PEMBERSIHAN NOMOR SURAT (Membuang NIM/Prefix)
+            const rawNomor = targetData.nomor || searchInput;
+            const cleanNomor = rawNomor.includes('/') ? rawNomor.split('/')[1] : rawNomor;
+            
+            if (resNomorSurat) resNomorSurat.textContent = `${cleanNomor}/FIKes-UF/BAAK/Ket-Mhsw/IV/2026`;
 
-            // 3. Set Nama Dekan FIKES yang Baru
             if (resPenandatangan) {
-                resPenandatangan.innerHTML = `Ahmad Jubaedi, SKM, MKM <br><span style="font-size:0.75rem; color:#64748b; font-weight:400;">(Dekan FIKES - UF)</span>`;
+                resPenandatangan.innerHTML = `Prof. Dr. dr. Siti Aminah, M.Kes <br><span style="font-size:0.75rem; color:#64748b; font-weight:400;">(Dekan FIKES - UF)</span>`;
             }
 
-            // 4. Memecah isi Kolom Aktivitas Excel untuk Mengambil Nama Program Studi
             let rawActivity = targetData.activity || "";
             let prodiText = "Sarjana Keperawatan";
 
