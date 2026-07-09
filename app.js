@@ -1,46 +1,108 @@
-// DOM Elements Mapping
-const views = {
-    search: document.getElementById('view-search'),
-    loading: document.getElementById('view-loading'),
-    success: document.getElementById('view-result-success'),
-    error: document.getElementById('view-result-error')
-};
+document.addEventListener("DOMContentLoaded", () => {
+    // Inisialisasi ikon dari Lucide
+    lucide.createIcons();
 
-const dataFields = {
-    name: document.getElementById('res-name'),
-    nim: document.getElementById('res-nim'),
-    prodi: document.getElementById('res-prodi'),
-    perihal: document.getElementById('res-perihal'),
-    ta: document.getElementById('res-ta'),
-    nomor: document.getElementById('res-id')
-};
+    // DOM Elemen Utama
+    const viewHome = document.getElementById("view-home");
+    const viewLoading = document.getElementById("view-loading");
+    const viewSuccess = document.getElementById("view-result-success");
+    const viewFailed = document.getElementById("view-result-failed");
 
-const signersContainer = document.getElementById('signers-container');
-const searchInput = document.getElementById('search-input');
-const btnSearch = document.getElementById('btn-search');
-const btnBackList = document.querySelectorAll('.btn-back');
+    const inputCertId = document.getElementById("input-cert-id");
+    const btnVerify = document.getElementById("btn-verify");
+    const btnStartScan = document.getElementById("btn-start-scan");
+    const btnCloseScanner = document.getElementById("btn-close-scanner");
+    const btnBackList = document.querySelectorAll(".btn-back");
+    const scannerContainer = document.getElementById("scanner-container");
 
-// Fungsi Navigasi Antar Tampilan (View)
-function showView(viewName) {
-    Object.keys(views).forEach(key => {
-        if (views[key]) views[key].classList.add('hidden');
-    });
-    if (views[viewName]) {
-        views[viewName].classList.remove('hidden');
-    }
-}
+    // Elemen Pengisi Data Detail Keberhasilan
+    const resName = document.getElementById("res-name");
+    const resRole = document.getElementById("res-role");
+    const resActivity = document.getElementById("res-activity");
+    const resDate = document.getElementById("res-date");
+    const resId = document.getElementById("res-id");
+    const signersContainer = document.getElementById("signers-container");
 
-// Logika Inti Verifikasi & Format Penggabungan String Data
-function verifyDocument(id) {
-    if (!id) return;
-    
+    let html5QrCode = null;
+    let documentDatabase = null;
+
+    // Ambil parameter dari URL (?id=5021xxxx)
+    const urlParams = new URLSearchParams(window.location.search);
+    const certIdParam = urlParams.get('id');
+
+    // Tampilkan loading saat database sedang dimuat
     showView("loading");
-    
-    // Memberikan delay efek transisi loading premium (600ms)
-    setTimeout(() => {
+
+    // ⚡ BYPASS CACHE STRATEGY: Memaksa browser mengambil data paling baru langsung dari server GitHub
+    fetch(`database.json?v=${new Date().getTime()}`, {
+        headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Gagal memuat berkas database.json");
+        return response.json();
+    })
+    .then(data => {
+        documentDatabase = data;
+        // Jika ada parameter ID di URL, langsung lakukan verifikasi otomatis
+        if (certIdParam) {
+            verifyDocument(certIdParam.trim());
+        } else {
+            showView("home");
+        }
+    })
+    .catch(error => {
+        console.error("Kesalahan memuat database:", error);
+        if (certIdParam) showView("failed");
+        else showView("home");
+    });
+
+    // Event Listener Tombol Verifikasi Manual (Input NIM)
+    btnVerify.addEventListener("click", () => {
+        const certId = inputCertId.value.trim();
+        if (certId) {
+            window.location.href = `?id=${encodeURIComponent(certId)}`;
+        } else {
+            alert("Silakan masukkan NIM Mahasiswa terlebih dahulu.");
+        }
+    });
+
+    inputCertId.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") btnVerify.click();
+    });
+
+    // Event Listener Tombol Kembali
+    btnBackList.forEach(btn => {
+        btn.addEventListener("click", () => {
+            window.location.href = window.location.pathname;
+        });
+    });
+
+    // Event Listener Kamera/Scanner
+    btnStartScan.addEventListener("click", () => {
+        scannerContainer.classList.remove("hidden");
+        btnStartScan.classList.add("hidden");
+        startScanner();
+    });
+
+    btnCloseScanner.addEventListener("click", () => {
+        stopScanner();
+    });
+
+    // Fungsi Utama Verifikasi Arsip Surat
+    function verifyDocument(id) {
+        if (!documentDatabase) {
+            showView("failed");
+            return;
+        }
+
+        // Antisipasi ketidakcocokan huruf besar/kecil dari input URL
         const cleanId = id.trim().toUpperCase();
-        
-        // Pencarian Key secara Case-Insensitive (NIM)
+
+        // Cari Key (NIM) di database secara Case-Insensitive
         const docKey = Object.keys(documentDatabase).find(
             key => key.trim().toUpperCase() === cleanId
         );
@@ -48,72 +110,98 @@ function verifyDocument(id) {
         if (docKey && documentDatabase[docKey]) {
             const data = documentDatabase[docKey];
             
-            // 1. Logika Penggabungan Otomatis Nomor Surat Lengkap
-            let nomorLengkap = data.nomor || "-";
-            if (data.nomor && data.kode && data.bulan) {
-                // Digabung menjadi format: 2909/FIKes-UF/BAAK/Ket-Mhsw/VII/2026
-                nomorLengkap = `${data.nomor}/${data.kode}/${data.bulan}/2026`;
-            } else if (data.nomor && data.nomor.includes("/")) {
-                nomorLengkap = data.nomor;
+            // Mengambil nama Program Studi dari string activity menggunakan Regex (Fallback jika tidak dipisah)
+            let prodiNama = "-";
+            if (data.activity) {
+                const matchProdi = data.activity.match(/Program Studi\s+([^<]+)/i);
+                if (matchProdi) prodiNama = matchProdi[1].trim();
             }
-            
-            // 2. Data Binding ke Komponen Halaman Web
-            if (dataFields.name) dataFields.name.textContent = data.name || "-";
-            if (dataFields.nim) dataFields.nim.textContent = docKey || "-";
-            if (dataFields.prodi) dataFields.prodi.textContent = data.activity || "-"; // Memetakan "Program Studi..."
-            if (dataFields.perihal) dataFields.perihal.textContent = data.perihal || "-";
-            if (dataFields.ta) dataFields.ta.textContent = data.ta || "-";
-            if (dataFields.nomor) dataFields.nomor.textContent = nomorLengkap;
 
-            // 3. Render Elemen Penandatangan Polos/Flat Tanpa Box
+            // Masukkan data dasar ke komponen HTML sesuai pesanan
+            resName.textContent = data.name || "-";
+            document.getElementById("res-nim").textContent = docKey; // Menampilkan NIM (Key JSON)
+            document.getElementById("res-prodi").textContent = prodiNama;
+            document.getElementById("res-perihal").textContent = data.perihal || "Keterangan Aktif Mahasiswa";
+            document.getElementById("res-ta").textContent = data.ta || "2025/2026";
+            resId.textContent = data.nomor || "-"; // Menampilkan Nomor Surat
+            
+            // Render Elemen Penandatangan secara dinamis (Flat & Bersih tanpa embel-embel UF)
             signersContainer.innerHTML = "";
             if (data.signers && Array.isArray(data.signers) && data.signers.length > 0) {
                 data.signers.forEach((signer) => {
+                    const labelRole = signer.role || "Pejabat Berwenang";
                     const signerName = signer.name || "-";
+                    
                     signersContainer.innerHTML += `
-                        <div style="font-size: 0.95rem; font-weight: 600; color: #f8fafc; padding: 2px 0;">${signerName}</div>
+                        <div class="font-semibold text-slate-100">${signerName}</div>
+                        <div class="text-sm text-slate-400 mt-0.5">${labelRole}</div>
                     `;
                 });
             } else {
+                // Fallback murni nama Pejabat tanpa teks tambahan
                 signersContainer.innerHTML = `
-                    <div style="font-size: 0.95rem; font-weight: 600; color: #f8fafc; padding: 2px 0;">Ahmad Jubaedi, SKM, MKM</div>
+                    <div class="font-semibold text-slate-100">Ahmad Jubaedi, SKM, MKM</div>
+                    <div class="text-sm text-slate-400 mt-0.5">Dekan FIKes</div>
                 `;
             }
+    // Navigasi Tampilan Kartu Sistem (View Switcher)
+    function showView(viewName) {
+        viewHome.classList.add("hidden");
+        viewLoading.classList.add("hidden");
+        viewSuccess.classList.add("hidden");
+        viewFailed.classList.add("hidden");
 
-            if (typeof stopScanner === "function") stopScanner();
-            showView("success");
+        if (viewName === "success") viewSuccess.classList.remove("hidden");
+        else if (viewName === "failed") viewFailed.classList.remove("hidden");
+        else if (viewName === "loading") viewLoading.classList.remove("hidden");
+        else viewHome.classList.remove("hidden");
+    }
+
+    // Fungsi Kamera Scanner QR
+    function startScanner() {
+        html5QrCode = new Html5Qrcode("qr-reader");
+        const config = { fps: 10, qrbox: { width: 220, height: 220 } };
+        html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
+            .catch(() => {
+                alert("Akses kamera ditolak atau perangkat media tidak ditemukan.");
+                stopScanner();
+            });
+    }
+
+    function stopScanner() {
+        if (html5QrCode) {
+            html5QrCode.stop().then(() => {
+                scannerContainer.add("hidden");
+                btnStartScan.classList.remove("hidden");
+                html5QrCode = null;
+            }).catch(() => {
+                scannerContainer.classList.add("hidden");
+                btnStartScan.classList.remove("hidden");
+                html5QrCode = null;
+            });
         } else {
-            if (typeof stopScanner === "function") stopScanner();
-            showView("error");
+            scannerContainer.classList.add("hidden");
+            btnStartScan.classList.remove("hidden");
         }
-    }, 600);
-}
+    }
 
-// Event Listener tombol cari manual
-if (btnSearch && searchInput) {
-    btnSearch.addEventListener('click', () => {
-        const targetId = searchInput.value;
-        if (targetId.trim() !== "") {
-            verifyDocument(targetId);
-        }
-    });
-
-    // Jalankan pencarian jika tombol Enter ditekan di dalam input
-    searchInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            const targetId = searchInput.value;
-            if (targetId.trim() !== "") {
-                verifyDocument(targetId);
+    function onScanSuccess(decodedText) {
+        stopScanner();
+        let targetId = decodedText;
+        try {
+            // Jika isi QR Code berupa URL utuh (?id=5021xxx), bedah untuk mengambil nilai parameter id saja
+            if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
+                const url = new URL(decodedText);
+                const idParam = url.searchParams.get("id");
+                if (idParam) targetId = idParam;
             }
+        } catch (e) {
+            console.error("Gagal memproses parsing URL QR Code:", e);
         }
-    });
-}
+        window.location.href = `?id=${encodeURIComponent(targetId.trim())}`;
+    }
 
-// Event Listener tombol kembali / reset ulang pencarian
-btnBackList.forEach(btn => {
-    btn.addEventListener('click', () => {
-        if (searchInput) searchInput.value = "";
-        showView("search");
-        if (typeof startScanner === "function") startScanner();
-    });
+    function onScanFailure() {
+        // Callback silent untuk meminimalisasi log konsol saat mencari QR Code
+    }
 });
