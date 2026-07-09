@@ -1,4 +1,6 @@
-/* Global Reset & Base Styles */
+/* ==============================================================================
+   🌐 1. GLOBAL RESET & BASE STYLES
+   ============================================================================== */
 * {
     margin: 0;
     padding: 0;
@@ -9,7 +11,7 @@
     --bg-dark: #0a0e17;
     --bg-card: rgba(22, 30, 49, 0.65);
     --border-color: rgba(255, 255, 255, 0.08);
-    --primary-color: #10b981; /* Emerald */
+    --primary-color: #10b981; /* Emerald Green */
     --primary-hover: #059669;
     --primary-glow: rgba(16, 185, 129, 0.15);
     --rose-color: #f43f5e;
@@ -27,19 +29,19 @@ body {
     background-color: var(--bg-dark);
     color: var(--text-primary);
     min-height: 100vh;
-    
     display: flex;
     flex-direction: column;
     justify-content: flex-start; 
     align-items: center;         
-    
     position: relative;
     overflow-x: hidden;
     line-height: 1.5;
-    padding: 40px 0;             
+    padding: 40px 0;              
 }
 
-/* Background Glowing Effects */
+/* ==============================================================================
+   ✨ 2. BACKGROUND GLOWING EFFECTS
+   ============================================================================== */
 .bg-glow {
     position: absolute;
     border-radius: 50%;
@@ -65,11 +67,13 @@ body {
     right: -150px;
 }
 
-/* App Container Layout */
+/* ==============================================================================
+   📦 3. APP CONTAINER & CARD SYSTEM (GLASSMORPHISM)
+   ============================================================================== */
 .container {
     width: 100%;
     max-width: 560px;
-    padding: 0 16px;             
+    padding: 0 16px;              
     z-index: 10;
     display: flex;
     flex-direction: column;
@@ -77,7 +81,38 @@ body {
     margin: 0 auto; 
 }
 
-/* Header UI */
+.card {
+    background: var(--bg-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 2px;
+    letter-spacing: -0.02em;
+}
+
+.card-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 4px;
+}
+
+/* ==============================================================================
+   🏛️ 4. HEADER UI & BRANDING
+   ============================================================================== */
 .header {
     display: flex;
     justify-content: center;
@@ -96,7 +131,7 @@ body {
 .logo-icon {
     width: 80px;
     height: 80px;
-    color: var(--primary-color);
+    object-fit: contain;
     filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.4)); 
 }
 
@@ -111,6 +146,7 @@ body {
     font-weight: 800;
     letter-spacing: 0.05em;
     color: #ffffff;
+    line-height: 1.3;
 }
 
 .brand-subtitle {
@@ -118,24 +154,199 @@ body {
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.1em;
+    margin-top: 4px;
 }
 
-/* Premium Card (Glassmorphism) */
-.card {
-    background: var(--bg-card);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--border-color);
-    border-radius: 24px;
-    padding: 32px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+/* ==============================================================================
+   🔍 5. SEARCH BOX & PREMIUM INPUTS
+   ============================================================================== */
+.search-box {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 12px;
+    width: 100%;
+    margin-top: 8px;
 }
 
-/* Loading Spinner */
+@media (min-width: 481px) {
+    .search-box {
+        flex-direction: row;
+        gap: 8px;
+    }
+}
+
+.search-box input[type="text"] {
+    flex: 1;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 14px 16px;
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.25s ease;
+}
+
+.search-box input[type="text"]:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px var(--primary-glow);
+    background: rgba(15, 23, 42, 0.8);
+}
+
+/* ==============================================================================
+   🕹️ 6. PREMIUM BUTTONS SYSTEM
+   ============================================================================== */
+.btn-primary {
+    background: var(--primary-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 24px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+}
+
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.03);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 14px 24px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+.btn-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.btn-icon-only {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.btn-icon-only:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+}
+
+.action-buttons {
+    width: 100%;
+    margin-top: 12px;
+}
+
+/* ==============================================================================
+   📷 7. QR CODE SCANNER UI (CUSTOM COMPONENT REDESIGN)
+   ============================================================================== */
+.scanner-box {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+.scanner-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.scanner-header h3 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.scanner-wrapper {
+    position: relative;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000000;
+}
+
+#qr-reader {
+    border: none !important;
+    width: 100% !important;
+}
+
+#qr-reader __video {
+    object-fit: cover !important;
+    width: 100% !important;
+    height: auto !important;
+}
+
+/* Efek Gerak Laser Pemindai */
+.scanner-laser {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(to right, transparent, var(--primary-color), transparent);
+    box-shadow: 0 0 8px var(--primary-color);
+    z-index: 10;
+    pointer-events: none;
+    animation: scanning 2.5s linear infinite;
+}
+
+@keyframes scanning {
+    0% { top: 0%; }
+    50% { top: 100%; }
+    100% { top: 0%; }
+}
+
+.scanner-tip {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* ==============================================================================
+   ⏳ 8. LOADING SPINNER
+   ============================================================================== */
 .spinner-container {
     display: flex;
     flex-direction: column;
@@ -157,7 +368,9 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* Result Header Status */
+/* ==============================================================================
+   ✅ 9. RESULT CARD SYSTEM (SUCCESS & FAILED STATS)
+   ============================================================================== */
 .result-card {
     display: flex;
     flex-direction: column;
@@ -229,6 +442,19 @@ body {
     letter-spacing: -0.01em;
 }
 
+.verification-time {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+}
+
+.failed-message {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    padding: 0 8px;
+    margin-bottom: 8px;
+}
+
 .text-emerald {
     color: var(--primary-color);
     text-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
@@ -239,7 +465,9 @@ body {
     text-shadow: 0 0 10px rgba(244, 63, 94, 0.2);
 }
 
-/* Structured Details Box */
+/* ==============================================================================
+   📊 10. STRUCTURED DETAILS TABLE
+   ============================================================================== */
 .details-table {
     width: 100%;
     background: rgba(15, 23, 42, 0.4);
@@ -282,49 +510,45 @@ body {
     letter-spacing: 0.02em;
 }
 
-/* Dynamic Activity Box Component */
-.activity-box {
-    background: rgba(16, 185, 129, 0.04);
-    padding: 14px;
-    border-radius: 10px;
-    border-left: 3.5px solid var(--primary-color);
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: #e2e8f0;
-    margin-top: 2px;
-}
-
-/* Multi-Signers Section */
+/* Flat & Clean Signers Block Fix (No Nested Boxes) */
 .signers-block {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 6px;
     margin-top: 4px;
 }
 
-.signer-card {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    padding: 10px 14px;
-}
-
-.signer-name {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #ffffff;
-}
-
-.signer-role {
-    font-size: 0.78rem;
-    color: var(--text-secondary);
-}
-
-/* Utility Layout classes */
+/* ==============================================================================
+   🧱 11. LAYOUT UTILITIES & ANIMATIONS
+   ============================================================================== */
 .divider {
-    height: 1px;
-    background-color: var(--border-color);
+    position: relative;
+    text-align: center;
+    margin: 10px 0;
     width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.divider::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background: var(--border-color);
+    z-index: 1;
+}
+
+.divider span {
+    position: relative;
+    z-index: 2;
+    background: #0b111e; 
+    padding: 0 16px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .hidden {
@@ -335,7 +559,24 @@ body {
     animation: fadeIn 0.4s ease-out forwards;
 }
 
-/* Keyframe Animations */
+.footer {
+    text-align: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 8px;
+}
+
+.footer p {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.text-xs {
+    font-size: 0.7rem !important;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -353,12 +594,21 @@ body {
     100% { transform: scale(0.9); opacity: 0.2; }
 }
 
-/* Responsive Handling */
+/* ==============================================================================
+   📱 12. RESPONSIVE ADAPTATION
+   ============================================================================== */
 @media (max-width: 480px) {
+    body {
+        padding: 20px 0;
+    }
     .card {
         padding: 24px 16px;
+        gap: 16px;
     }
     .verification-status {
         font-size: 1.2rem;
+    }
+    .brand-title {
+        font-size: 1.1rem;
     }
 }
