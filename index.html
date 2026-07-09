@@ -1,31 +1,91 @@
-<div class="details-table">
-    <div class="detail-row">
-        <span class="detail-label">Nama Mahasiswa</span>
-        <span class="detail-value student-name-highlight" id="res-name">-</span>
-    </div>
-    <div class="detail-row">
-        <span class="detail-label">NIM</span>
-        <span class="detail-value font-mono font-semibold" id="res-nim">-</span>
-    </div>
-    <div class="detail-row">
-        <span class="detail-label">Program Studi</span>
-        <span class="detail-value" id="res-prodi">-</span>
-    </div>
-    <div class="detail-row">
-        <span class="detail-label">Perihal Surat</span>
-        <span class="detail-value" id="res-perihal">-</span>
-    </div>
-    <div class="detail-row">
-        <span class="detail-label">Tahun Akademik</span>
-        <span class="detail-value font-semibold" id="res-ta">-</span>
-    </div>
-    <div class="detail-row">
-        <span class="detail-label">Nomor Surat</span>
-        <span class="detail-value font-mono text-sm text-emerald" id="res-id">-</span>
-    </div>
-    <div class="detail-row">
-        <span class="detail-label">Penandatangan</span>
-        <div id="signers-container" class="signers-block">
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Dokumen Digital - Universitas Faletehan</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="verification-container">
+        <div class="header-branding">
+            <h2>SISTEM VERIFIKASI DIGITAL</h2>
+            <p>Fakultas Ilmu Kesehatan (FIKes) - Universitas Faletehan</p>
+        </div>
+
+        <div class="divider"></div>
+
+        <div id="status-loading" class="status-box info">
+            <div class="spinner"></div>
+            <p>Sedang mengecek keaslian dokumen...</p>
+        </div>
+
+        <div id="status-invalid" class="status-box error hidden">
+            <div class="icon-status">❌</div>
+            <h3>Dokumen Tidak Valid!</h3>
+            <p>Data dokumen tidak ditemukan di dalam pangkalan data resmi atau telah mengalami modifikasi.</p>
+        </div>
+
+        <div id="verification-card" class="verification-card hidden">
+            <div class="status-badge success">
+                <span class="icon-badge">✓</span> DOKUMEN ASLI & TERVERIFIKASI
             </div>
+
+            <div class="document-details">
+                <div class="detail-group">
+                    <label>Perihal Dokumen</label>
+                    <p id="doc-perihal" class="highlight-text">-</p>
+                </div>
+                
+                <div class="detail-group">
+                    <label>Nomor Surat</label>
+                    <p id="doc-nomor">-</p>
+                </div>
+
+                <div class="detail-group">
+                    <label>Nama Mahasiswa</label>
+                    <p id="doc-name" class="student-name">-</p>
+                </div>
+
+                <div class="detail-group">
+                    <label>NIM</label>
+                    <p id="doc-nim">-</p>
+                </div>
+
+                <div class="detail-group">
+                    <label>Status Kerja / Peran</label>
+                    <p id="doc-role">-</p>
+                </div>
+
+                <div class="detail-group">
+                    <label>Keterangan / Detail Aktivitas</label>
+                    <div id="doc-activity" class="activity-box">-</div>
+                </div>
+
+                <div class="detail-group">
+                    <label>Tanggal Dikeluarkan</label>
+                    <p id="doc-date">-</p>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="signers-section">
+                <h4>Penanda Tangan Dokumen:</h4>
+                <div id="signers-list">
+                    </div>
+            </div>
+        </div>
+
+        <div class="footer-text">
+            <p>© 2026 FIKes Universitas Faletehan. Hak Cipta Dilindungi.</p>
+        </div>
     </div>
-</div>
+
+    <script src="app.js"></script>
+</body>
+</html>
