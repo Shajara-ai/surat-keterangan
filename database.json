@@ -1,16 +1,16 @@
 {
-  "5021001": {
-    "name": "Ahmad Subagja",
-    "nim": "5021001",
-    "prodi": "S1 Keperawatan",
-    "perihal": "Surat Keterangan Aktif Kuliah",
+  "1590125031172": {
+    "name": "RONI",
+    "nim": "1590125031172",
+    "prodi": "Pendidikan Profesi Bidan",
+    "perihal": "Surat Keterangan Aktif Mahasiswa",
     "ta": "2025/2026 Ganjil",
-    "no_surat": "100/FIKes-UF/BAAK/Ket-Mhsw/VII/2026",
-    "download_url": "https://drive.google.com/uc?export=download&id=CONTOH_ID_DOKUMEN",
+    "no_surat": "2930//FIKes-UF/BAAK/Ket-Mhsw//IV/2026/2026",
+    "download_url": "",
     "signers": [
       {
-        "role": "Dekan FIKes - UF",
-        "name": "Prof. Dr. dr. Siti Aminah, M.Kes"
+        "role": "Wakil Dekan I FIKes - UF",
+        "name": "Ahmad Jubaedi, SKM, MKM"
       }
     ]
   }
