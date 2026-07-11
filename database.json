@@ -13,5 +13,20 @@
         "name": "Ahmad Jubaedi, SKM, MKM"
       }
     ]
+  },
+  "1440125041003": {
+    "name": "AKBAR ILMI BILAMANDA",
+    "nim": "1440125041003",
+    "prodi": "Diploma III Keperawatan",
+    "perihal": "Surat Keterangan Aktif Mahasiswa",
+    "ta": "2025/2026 Ganjil",
+    "no_surat": "2916/FIKes-UF/BAAK/Ket-Mhsw/IV/2026",
+    "download_url": "",
+    "signers": [
+      {
+        "role": "Wakil Dekan I FIKes - UF",
+        "name": "Ahmad Jubaedi, SKM, MKM"
+      }
+    ]
   }
 }
