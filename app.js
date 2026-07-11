@@ -100,57 +100,56 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================================================
     // FUNGSI UTAMA: Verifikasi Dokumen Surat Keterangan
     // ==========================================================================
+    // Tambahkan ini di bagian atas app.js bersama deklarasi DOM lainnya
+    const resNoSurat = document.getElementById("res-no-surat"); 
+    
     function verifyDocument(id) {
         if (!documentDatabase) {
             showView("failed");
             return;
         }
-
-        // Standardisasi pencarian data (Case-Insensitive)
+    
         const cleanId = id.trim().toUpperCase();
-
-        // Cari index/key di database yang cocok dengan NIM atau Nomor Surat
         const docKey = Object.keys(documentDatabase).find(
             key => key.trim().toUpperCase() === cleanId
         );
-
+    
         if (docKey && documentDatabase[docKey]) {
             const data = documentDatabase[docKey];
             
-            // Suntik data dasar mahasiswa ke komponen HTML
+            // DISTRIBUSI DATA YANG BENAR:
             resName.textContent = data.name || "-";
-            resNim.textContent = data.nim || docKey; // Fallback ke key utama jika field nim kosong
+            resNim.textContent = data.nim || docKey; // Menampilkan NIM asli (cth: 5021001)
             resProdi.textContent = data.prodi || "-";
             resPerihal.textContent = data.perihal || "Surat Keterangan Aktif Kuliah";
             resTa.textContent = data.ta || "-";
-            resId.textContent = docKey; // Menampilkan kode registrasi arsip
             
-            // Mengatur visibilitas tombol unduh lampiran PDF dokumen secara dinamis
+            // Menampilkan nomor surat resmi panjang (cth: 100/FIKes-UF/BAAK/Ket-Mhsw/VII/2026)
+            resNoSurat.textContent = data.no_surat || "-"; 
+            
+            if (resId) resId.textContent = docKey; // Simpan key arsip di latar belakang
+            
+            // Logika tombol unduh PDF
             if (data.download_url) {
                 btnDownloadPdf.href = data.download_url;
                 btnDownloadPdf.style.display = "flex";
             } else {
                 btnDownloadPdf.style.display = "none";
             }
-
-            // Loop data pejabat penandatangan secara dinamis berdasarkan data JSON
+    
+            // Loop penandatangan
             signersContainer.innerHTML = "";
             if (data.signers && Array.isArray(data.signers) && data.signers.length > 0) {
                 data.signers.forEach((signer) => {
                     const detailRow = document.createElement("div");
                     detailRow.className = "detail-row";
-                    
-                    const labelText = signer.role || "Penandatangan";
-                    const signerName = signer.name || "-";
-                    
                     detailRow.innerHTML = `
-                        <span class="detail-label">${labelText}</span>
-                        <span class="detail-value font-semibold">${signerName}</span>
+                        <span class="detail-label">${signer.role || "Penandatangan"}</span>
+                        <span class="detail-value font-semibold">${signer.name || "-"}</span>
                     `;
                     signersContainer.appendChild(detailRow);
                 });
             } else {
-                // Aturan fallback default jika field penandatangan tidak diisi di berkas JSON
                 const detailRow = document.createElement("div");
                 detailRow.className = "detail-row";
                 detailRow.innerHTML = `
@@ -159,7 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
                 signersContainer.appendChild(detailRow);
             }
-
+    
             showView("success");
         } else {
             showView("failed");
