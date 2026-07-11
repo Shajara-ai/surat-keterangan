@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const resProdi = document.getElementById("res-prodi");
     const resPerihal = document.getElementById("res-perihal");
     const resTa = document.getElementById("res-ta");
+    const resNoSurat = document.getElementById("res-no-surat"); // 🌟 POSISI DIPERBAIKI DI SINI
     const resId = document.getElementById("res-id");
     const signersContainer = document.getElementById("signers-container");
     const btnDownloadPdf = document.getElementById("btn-download-pdf");
@@ -100,7 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================================================
     // FUNGSI UTAMA: Verifikasi Dokumen Surat Keterangan
     // ==========================================================================
-    // Tambahkan ini di bagian atas app.js bersama deklarasi DOM lainnya    
     function verifyDocument(id) {
         if (!documentDatabase) {
             showView("failed");
@@ -123,7 +123,9 @@ document.addEventListener("DOMContentLoaded", () => {
             resTa.textContent = data.ta || "-";
             
             // Menampilkan nomor surat resmi panjang (cth: 100/FIKes-UF/BAAK/Ket-Mhsw/VII/2026)
-            resNoSurat.textContent = data.no_surat || "-"; 
+            if (resNoSurat) {
+                resNoSurat.textContent = data.no_surat || "-"; 
+            }
             
             if (resId) resId.textContent = docKey; // Simpan key arsip di latar belakang
             
@@ -211,7 +213,6 @@ document.addEventListener("DOMContentLoaded", () => {
         stopScanner();
         let scannedId = decodedText;
         try {
-            // Jika isi QR Code berupa URL penuh, potong dan ambil nilai parameter '?id=' saja
             if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
                 const url = new URL(decodedText);
                 const idParam = url.searchParams.get("id");
@@ -223,7 +224,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = `?id=${encodeURIComponent(scannedId.trim())}`;
     }
 
-    function onScanFailure() {
-        // Callback silent (dikosongkan agar console tidak penuh saat kamera melakukan tracking)
+    fnction onScanFailure() {
+        // Callback silent
     }
 });
