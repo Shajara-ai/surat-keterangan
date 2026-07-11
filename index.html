@@ -32,7 +32,7 @@
             <p class="card-desc">Pindai QR code pada lembar surat aktif kuliah atau masukkan NIM mahasiswa di bawah ini untuk memeriksa keabsahan dokumen.</p>
 
             <div class="search-box">
-                <input type="text" id="input-cert-id" placeholder="Masukkan NIM Mahasiswa atau Nomor Surat" autocomplete="off">
+                <input type="text" id="input-cert-id" placeholder="Masukkan NIM Mahasiswa (Contoh: 5021...)" autocomplete="off">
                 <button id="btn-verify" class="btn-primary">
                     <i data-lucide="search" class="btn-icon"></i>
                     Verifikasi Dokumen
@@ -104,25 +104,25 @@
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Nomor Surat</span>
-                    <span class="detail-value font-mono text-sm" id="res-id">-</span>
+                    <span class="detail-value font-mono text-sm text-emerald" id="res-id">-</span>
                 </div>
                 <div id="signers-container" style="display: contents;">
                     </div>
             </div>
 
-            <div class="activity-box" style="border-left: 4px solid #10b981; background: rgba(16, 185, 129, 0.04); margin-top: 24px; padding: 16px; border-radius: 8px;">
+            <div class="activity-box">
                 <div style="display: flex; gap: 12px; align-items: flex-start;">
-                    <i data-lucide="shield-check" style="color: #10b981; width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px;"></i>
+                    <i data-lucide="shield-check" style="color: var(--primary-color); width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px;"></i>
                     <div>
                         <h4 style="margin: 0 0 6px 0; color: #ffffff; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">Pernyataan Resmi Keabsahan</h4>
-                        <p style="margin: 0; color: #94a3b8; font-size: 0.8rem; line-height: 1.6; text-align: justify;">
-                            Halaman ini merupakan media legalisasi data arsip surat digital resmi <span style="color: #10b981; font-weight: 500;">Fakultas Ilmu Kesehatan Universitas Faletehan</span>. Dokumen yang divalidasi melalui sistem ini dinyatakan <span style="color: #10b981; font-weight: 600;">Sah & Valid</span>, benar dikeluarkan oleh tata usaha fakultas, dan ditandatangani oleh pejabat berwenang secara sah demi hukum administrasi akademik.
+                        <p style="margin: 0; color: var(--text-secondary); font-size: 0.8rem; line-height: 1.6; text-align: justify;">
+                            Halaman ini merupakan media legalisasi data arsip surat digital resmi <span style="color: var(--primary-color); font-weight: 500;">Fakultas Ilmu Kesehatan Universitas Faletehan</span>. Dokumen yang divalidasi melalui sistem ini dinyatakan <span style="color: var(--primary-color); font-weight: 600;">Sah & Valid</span>, benar dikeluarkan oleh tata usaha fakultas, dan ditandatangani oleh pejabat berwenang secara sah demi hukum administrasi akademik.
                         </p>
                     </div>
                 </div>
             </div>
 
-            <div class="action-buttons" style="margin-top: 28px;">
+            <div class="action-buttons" style="margin-top: 12px;">
                 <a id="btn-download-pdf" href="#" target="_blank" class="btn-success" style="display: none;">
                     <i data-lucide="download" class="btn-icon"></i>
                     Unduh Lampiran Dokumen
@@ -143,11 +143,11 @@
             <p class="verification-time">Arsip data surat tidak terdaftar di server database kami.</p>
             
             <div class="failed-message">
-                Mohon periksa kembali nomor NIM atau Nomor Surat yang Anda masukkan, serta pastikan lembar QR Code berasal dari Surat Keterangan resmi FIKES.
+                Mohon periksa kembali nomor NIM atau Nomor Surat yang Anda masukkan, serta pastikan lembar QR Code berasal dari Surat Keterangan resmi milik Fakultas Ilmu Kesehatan (FIKES).
             </div>
 
-            <div class="action-buttons" style="margin-top: 24px;">
-                <button class="btn-primary btn-back" style="width: 100%;">
+            <div class="action-buttons" style="margin-top: 12px;">
+                <button class="btn-primary btn-back">
                     <i data-lucide="arrow-left" class="btn-icon"></i>
                     Kembali ke Pencarian
                 </button>
