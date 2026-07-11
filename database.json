@@ -28,5 +28,20 @@
         "name": "Ahmad Jubaedi, SKM, MKM"
       }
     ]
+  },
+  "1022031237": {
+    "name": "USWATUN HASANAH",
+    "nim": "1022031237",
+    "prodi": "Sarjana Keperawatan",
+    "perihal": "Surat Keterangan Aktif Mahasiswa",
+    "ta": "2025/2026 Ganjil",
+    "no_surat": "2909/FIKes-UF/BAAK/Ket-Mhsw/IV/2026",
+    "download_url": "",
+    "signers": [
+      {
+        "role": "Wakil Dekan I FIKes - UF",
+        "name": "Ahmad Jubaedi, SKM, MKM"
+      }
+    ]
   }
 }
