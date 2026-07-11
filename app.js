@@ -1,224 +1,232 @@
-// ==============================================================================
-// 🌐 CONFIGURATION & GLOBAL VARIABLES
-// ==============================================================================
-const CONFIG = {
-    databaseUrl: "database.json", // File database.json di root GitHub Pages
-    autoTimeoutUrl: 3000
-};
+document.addEventListener("DOMContentLoaded", () => {
+    // Inisialisasi ikon dari Lucide secara otomatis
+    lucide.createIcons();
 
-let documentDatabase = {};
-let html5QrcodeScanner = null;
+    // DOM Elemen Utama Layar
+    const viewHome = document.getElementById("view-home");
+    const viewLoading = document.getElementById("view-loading");
+    const viewSuccess = document.getElementById("view-result-success");
+    const viewFailed = document.getElementById("view-result-failed");
 
-// ==============================================================================
-// 🛠️ DOM ELEMENTS (DISESUAIKAN DENGAN HTML BARU)
-// ==============================================================================
-const views = {
-    loading: document.getElementById("view-loading"),
-    scan: document.getElementById("view-home"),               // Sesuai HTML: view-home
-    success: document.getElementById("view-result-success"),  // Sesuai HTML: view-result-success
-    error: document.getElementById("view-result-failed")      // Sesuai HTML: view-result-failed
-};
+    // Kontrol Input dan Navigasi Beranda
+    const inputCertId = document.getElementById("input-cert-id");
+    const btnVerify = document.getElementById("btn-verify");
+    const btnStartScan = document.getElementById("btn-start-scan");
+    const btnCloseScanner = document.getElementById("btn-close-scanner");
+    const btnBackList = document.querySelectorAll(".btn-back");
+    const scannerContainer = document.getElementById("scanner-container");
 
-const inputManualId = document.getElementById("input-cert-id"); // Sesuai HTML: input-cert-id
-const btnVerifyManual = document.getElementById("btn-verify");   // Sesuai HTML: btn-verify
-const btnStartScan = document.getElementById("btn-start-scan");
-const btnCloseScanner = document.getElementById("btn-close-scanner");
-const scannerContainer = document.getElementById("scanner-container");
+    // Elemen Pengisi Tabel Detail Surat Keterangan
+    const resName = document.getElementById("res-name");
+    const resNim = document.getElementById("res-nim");
+    const resProdi = document.getElementById("res-prodi");
+    const resPerihal = document.getElementById("res-perihal");
+    const resTa = document.getElementById("res-ta");
+    const resId = document.getElementById("res-id");
+    const signersContainer = document.getElementById("signers-container");
+    const btnDownloadPdf = document.getElementById("btn-download-pdf");
 
-// Elements penampung data sukses (Sesuai ID di HTML baru)
-const dataFields = {
-    nomor: document.getElementById("res-id"),         // Sesuai HTML: res-id
-    perihal: document.getElementById("res-perihal"),   // Sesuai HTML: res-perihal
-    name: document.getElementById("res-name"),         // Sesuai HTML: res-name
-    nim: document.getElementById("res-nim"),           // Sesuai HTML: res-nim
-    prodi: document.getElementById("res-prodi"),       // Sesuai HTML: res-prodi
-    ta: document.getElementById("res-ta"),             // Sesuai HTML: res-ta
-};
-const signersContainer = document.getElementById("signers-container");
+    let html5QrCode = null;
+    let documentDatabase = null;
 
-// ==============================================================================
-// 🔀 VIEW SWITCHER
-// ==============================================================================
-function showView(viewName) {
-    Object.keys(views).forEach(key => {
-        if (views[key]) views[key].classList.add("hidden");
-    });
-    if (views[viewName]) {
-        views[viewName].classList.remove("hidden");
-    }
-    // Inisialisasi ulang Lucide Icons jika ada komponen baru yang muncul
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
-}
+    // Menangkap parameter '?id=' dari URL untuk auto-verify (contoh scan QR)
+    const urlParams = new URLSearchParams(window.location.search);
+    const docIdParam = urlParams.get('id');
 
-// ==============================================================================
-// 📥 LOAD DATABASE ONLINE
-// ==============================================================================
-async function loadDatabase() {
+    // Menampilkan animasi loading saat menarik pangkalan data
     showView("loading");
-    try {
-        const response = await fetch(`${CONFIG.databaseUrl}?t=${new Date().getTime()}`);
-        if (!response.ok) throw new Error(`Gagal memuat database.`);
-        documentDatabase = await response.json();
-        console.log("📊 Sinkronisasi Database Berhasil.");
-        checkUrlParameter();
-    } catch (error) {
-        console.error("❌ Error Database:", error);
-        showView("error");
-    }
-}
 
-// ==============================================================================
-// 🔍 CORE VERIFICATION LOGIC
-// ==============================================================================
-function verifyDocument(id) {
-    if (!id) return;
-    
-    const cleanId = id.trim().toUpperCase();
-    
-    // Pencarian Key secara Case-Insensitive
-    const docKey = Object.keys(documentDatabase).find(
-        key => key.trim().toUpperCase() === cleanId
-    );
+    // ⚡ BYPASS CACHE STRATEGY: Mencegah browser menyimpan cache database lama
+    fetch(`database.json?v=${new Date().getTime()}`, {
+        headers: {
+            'Cache-Control': 'no-cache, no-store, must-revalidate',
+            'Pragma': 'no-cache',
+            'Expires': '0'
+        }
+    })
+    .then(response => {
+        if (!response.ok) throw new Error("Gagal memuat berkas database.json");
+        return response.json();
+    })
+    .then(data => {
+        documentDatabase = data;
+        // Jika terdapat parameter ID di URL, langsung lakukan eksekusi pencarian otomatis
+        if (docIdParam) {
+            verifyDocument(docIdParam.trim());
+        } else {
+            showView("home");
+        }
+    })
+    .catch(error => {
+        console.error("Kesalahan memuat database:", error);
+        if (docIdParam) showView("failed");
+        else showView("home");
+    });
 
-    if (docKey && documentDatabase[docKey]) {
-        const data = documentDatabase[docKey];
-        
-        // Data Binding ke Elemen HTML Baru
-        if (dataFields.nomor) dataFields.nomor.textContent = data.nomor || "-";
-        if (dataFields.perihal) dataFields.perihal.textContent = data.perihal || "-";
-        if (dataFields.name) dataFields.name.textContent = data.name || "-";
-        if (dataFields.nim) dataFields.nim.textContent = docKey || "-";
-        if (dataFields.prodi) dataFields.prodi.textContent = data.activity || "-"; 
-        if (dataFields.ta) dataFields.ta.textContent = data.ta || "-";
+    // Event Listener Verifikasi Manual via Tombol Klik
+    btnVerify.addEventListener("click", () => {
+        const docId = inputCertId.value.trim();
+        if (docId) {
+            window.location.href = `?id=${encodeURIComponent(docId)}`;
+        } else {
+            alert("Silakan masukkan NIM Mahasiswa atau Nomor Surat terlebih dahulu.");
+        }
+    });
 
-        // Render Elemen Penandatangan secara dinamis (Flat & Tanpa Jabatan)
-        signersContainer.innerHTML = "";
-        if (data.signers && Array.isArray(data.signers) && data.signers.length > 0) {
-            data.signers.forEach((signer) => {
-                const signerName = signer.name || "-";
-                signersContainer.innerHTML += `
-                    <div class="font-semibold text-slate-100" style="font-size: 0.95rem;">${signerName}</div>
+    // Akses jalan pintas keyboard Enter pada kolom pencarian
+    inputCertId.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") btnVerify.click();
+    });
+
+    // Event Listener Semua Tombol Kembali (Mereset URL ke halaman utama)
+    btnBackList.forEach(btn => {
+        btn.addEventListener("click", () => {
+            window.location.href = window.location.pathname;
+        });
+    });
+
+    // Event Listener Mengaktifkan Pemindai Kamera QR
+    btnStartScan.addEventListener("click", () => {
+        scannerContainer.classList.remove("hidden");
+        btnStartScan.classList.add("hidden");
+        startScanner();
+    });
+
+    // Event Listener Menutup Kotak Kamera
+    btnCloseScanner.addEventListener("click", () => {
+        stopScanner();
+    });
+
+    // ==========================================================================
+    // FUNGSI UTAMA: Verifikasi Dokumen Surat Keterangan
+    // ==========================================================================
+    function verifyDocument(id) {
+        if (!documentDatabase) {
+            showView("failed");
+            return;
+        }
+
+        // Standardisasi pencarian data (Case-Insensitive)
+        const cleanId = id.trim().toUpperCase();
+
+        // Cari index/key di database yang cocok dengan NIM atau Nomor Surat
+        const docKey = Object.keys(documentDatabase).find(
+            key => key.trim().toUpperCase() === cleanId
+        );
+
+        if (docKey && documentDatabase[docKey]) {
+            const data = documentDatabase[docKey];
+            
+            // Suntik data dasar mahasiswa ke komponen HTML
+            resName.textContent = data.name || "-";
+            resNim.textContent = data.nim || docKey; // Fallback ke key utama jika field nim kosong
+            resProdi.textContent = data.prodi || "-";
+            resPerihal.textContent = data.perihal || "Surat Keterangan Aktif Kuliah";
+            resTa.textContent = data.ta || "-";
+            resId.textContent = docKey; // Menampilkan kode registrasi arsip
+            
+            // Mengatur visibilitas tombol unduh lampiran PDF dokumen secara dinamis
+            if (data.download_url) {
+                btnDownloadPdf.href = data.download_url;
+                btnDownloadPdf.style.display = "flex";
+            } else {
+                btnDownloadPdf.style.display = "none";
+            }
+
+            // Loop data pejabat penandatangan secara dinamis berdasarkan data JSON
+            signersContainer.innerHTML = "";
+            if (data.signers && Array.isArray(data.signers) && data.signers.length > 0) {
+                data.signers.forEach((signer) => {
+                    const detailRow = document.createElement("div");
+                    detailRow.className = "detail-row";
+                    
+                    const labelText = signer.role || "Penandatangan";
+                    const signerName = signer.name || "-";
+                    
+                    detailRow.innerHTML = `
+                        <span class="detail-label">${labelText}</span>
+                        <span class="detail-value font-semibold">${signerName}</span>
+                    `;
+                    signersContainer.appendChild(detailRow);
+                });
+            } else {
+                // Aturan fallback default jika field penandatangan tidak diisi di berkas JSON
+                const detailRow = document.createElement("div");
+                detailRow.className = "detail-row";
+                detailRow.innerHTML = `
+                    <span class="detail-label">Dekan FIKES - UF</span>
+                    <span class="detail-value font-semibold">Prof. Dr. dr. Siti Aminah, M.Kes</span>
                 `;
+                signersContainer.appendChild(detailRow);
+            }
+
+            showView("success");
+        } else {
+            showView("failed");
+        }
+    }
+
+    // Navigasi Pengalihan Kartu Tampilan Interface
+    function showView(viewName) {
+        viewHome.classList.add("hidden");
+        viewLoading.classList.add("hidden");
+        viewSuccess.classList.add("hidden");
+        viewFailed.classList.add("hidden");
+
+        if (viewName === "success") viewSuccess.classList.remove("hidden");
+        else if (viewName === "failed") viewFailed.classList.remove("hidden");
+        else if (viewName === "loading") viewLoading.classList.remove("hidden");
+        else viewHome.classList.remove("hidden");
+    }
+
+    // ==========================================================================
+    // KOMPONEN ENGINE SCANNER QR CODE (HTML5-QRCode)
+    // ==========================================================================
+    function startScanner() {
+        html5QrCode = new Html5Qrcode("qr-reader");
+        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+        
+        html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess, onScanFailure)
+            .catch(() => {
+                alert("Akses modul kamera ditolak atau tidak terdeteksi di perangkat Anda.");
+                stopScanner();
+            });
+    }
+
+    function stopScanner() {
+        if (html5QrCode) {
+            html5QrCode.stop().then(() => {
+                scannerContainer.classList.add("hidden");
+                btnStartScan.classList.remove("hidden");
+                html5QrCode = null;
+            }).catch(() => {
+                scannerContainer.classList.add("hidden");
+                btnStartScan.classList.remove("hidden");
+                html5QrCode = null;
             });
         } else {
-            // Fallback nama Pejabat murni jika array penandatangan kosong
-            signersContainer.innerHTML = `
-                <div class="font-semibold text-slate-100" style="font-size: 0.95rem;">Ahmad Jubaedi, SKM, MKM</div>
-            `;
-        }
-
-        stopScanner();
-        showView("success");
-    } else {
-        stopScanner();
-        showView("error");
-    }
-}
-
-// ==============================================================================
-// 📷 QR CODE SCANNER OPERATIONS
-// ==============================================================================
-function startScanner() {
-    if (html5QrcodeScanner) return;
-
-    scannerContainer.classList.remove("hidden");
-    html5QrcodeScanner = new Html5QrcodeScanner(
-        "qr-reader", // Sesuai HTML baru: qr-reader
-        { 
-            fps: 10, 
-            qrbox: { width: 250, height: 250 },
-            rememberLastUsedCamera: true
-        },
-        false
-    );
-    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-}
-
-function stopScanner() {
-    if (html5QrcodeScanner) {
-        html5QrcodeScanner.clear().then(() => {
-            html5QrcodeScanner = null;
             scannerContainer.classList.add("hidden");
-        }).catch(err => {
-            console.error(err);
-            html5QrcodeScanner = null;
-        });
-    }
-}
-
-function onScanSuccess(decodedText) {
-    try {
-        if (decodedText.includes("?id=")) {
-            const urlParams = new URLSearchParams(decodedText.split("?")[1]);
-            const idParam = urlParams.get("id");
-            if (idParam) {
-                verifyDocument(idParam);
-                return;
-            }
+            btnStartScan.classList.remove("hidden");
         }
-    } catch (e) {
-        console.error(e);
-    }
-    verifyDocument(decodedText);
-}
-
-function onScanFailure(error) {
-    // Diabaikan untuk efisiensi scanning loop
-}
-
-function checkUrlParameter() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const id = urlParams.get("id");
-    if (id) {
-        verifyDocument(id);
-    } else {
-        showView("scan");
-    }
-}
-
-// ==============================================================================
-// 🎛️ INITIALIZATION & EVENT LISTENERS
-// ==============================================================================
-document.addEventListener("DOMContentLoaded", () => {
-    // Jalankan pemuatan database pertama kali
-    loadDatabase();
-
-    // Inisialisasi awal icon Lucide SVG
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
     }
 
-    // Event Tombol Cari Manual
-    if (btnVerifyManual) {
-        btnVerifyManual.addEventListener("click", () => {
-            verifyDocument(inputManualId.value.trim());
-        });
+    function onScanSuccess(decodedText) {
+        stopScanner();
+        let scannedId = decodedText;
+        try {
+            // Jika isi QR Code berupa URL penuh, potong dan ambil nilai parameter '?id=' saja
+            if (decodedText.startsWith("http://") || decodedText.startsWith("https://")) {
+                const url = new URL(decodedText);
+                const idParam = url.searchParams.get("id");
+                if (idParam) scannedId = idParam;
+            }
+        } catch (e) {
+            console.error("Gagal membaca enkripsi URL QR Code:", e);
+        }
+        window.location.href = `?id=${encodeURIComponent(scannedId.trim())}`;
     }
 
-    if (inputManualId) {
-        inputManualId.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") verifyDocument(inputManualId.value.trim());
-        });
+    function onScanFailure() {
+        // Callback silent (dikosongkan agar console tidak penuh saat kamera melakukan tracking)
     }
-
-    // Event Aktivasi Scanner Kamera
-    if (btnStartScan) {
-        btnStartScan.addEventListener("click", startScanner);
-    }
-
-    if (btnCloseScanner) {
-        btnCloseScanner.addEventListener("click", stopScanner);
-    }
-
-    // Event Handler untuk seluruh tombol kelas 'btn-back' (Kembali ke Awal)
-    document.querySelectorAll(".btn-back").forEach(btn => {
-        btn.addEventListener("click", () => {
-            if (inputManualId) inputManualId.value = "";
-            window.history.replaceState({}, document.title, window.location.pathname);
-            stopScanner();
-            showView("scan");
-        });
-    });
 });
