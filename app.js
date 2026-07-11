@@ -100,9 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================================================
     // FUNGSI UTAMA: Verifikasi Dokumen Surat Keterangan
     // ==========================================================================
-    // Tambahkan ini di bagian atas app.js bersama deklarasi DOM lainnya
-    const resNoSurat = document.getElementById("res-no-surat"); 
-    
+    // Tambahkan ini di bagian atas app.js bersama deklarasi DOM lainnya    
     function verifyDocument(id) {
         if (!documentDatabase) {
             showView("failed");
