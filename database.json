@@ -1,17 +1,15 @@
 {
-  "1022031237": {
-    "name": "USWATUN HASANAH",
-    "role": "Mahasiswa Aktif",
-    "activity": "Program Studi Sarjana Keperawatan",
-    "date": "8 Juli 2026",
-    "type": "surat",
-    "perihal": "Keterangan Aktif Mahasiswa",
-    "ta": "2025/2026",
-    "nomor": "2909",
+  "5021001": {
+    "name": "Ahmad Subagja",
+    "nim": "5021001",
+    "prodi": "S1 Keperawatan",
+    "perihal": "Surat Keterangan Aktif Kuliah",
+    "ta": "2025/2026 Ganjil",
+    "download_url": "https://drive.google.com/uc?export=download&id=CONTOH_ID_FILE",
     "signers": [
       {
-        "name": "Ahmad Jubaedi, SKM, MKM",
-        "role": ""
+        "role": "Wakil Dekan I FIKES",
+        "name": "Ners. H. Mamat Rahmat, M.Kep"
       }
     ]
   }
