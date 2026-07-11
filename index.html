@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verifikasi Surat Digital | FIKES - UF</title>
+    <title>Verifikasi Surat Keterangan Digital | FIKES - UF</title>
+    <meta name="description" content="Halaman verifikasi resmi untuk surat keterangan aktif mahasiswa Dekan Fakultas Ilmu Kesehatan (FIKES) - Universitas Faletehan secara digital.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -18,119 +19,149 @@
         <header class="header">
             <div class="logo-container">
                 <img src="logo_2.png" alt="Logo FIKES" class="logo-icon">
+                
                 <div class="logo-text">
                     <span class="brand-title">FAKULTAS ILMU KESEHATAN</span>
                     <span class="brand-title">UNIVERSITAS FALETEHAN</span>
-                    <span class="brand-subtitle">Verification System</span>
+                    <span class="brand-subtitle">Document Verification System</span>
                 </div>
             </div>
         </header>
 
         <section id="view-home" class="card fade-in">
-            <h1 class="card-title">Verifikasi Surat Digital</h1>
-            <p class="card-desc">Pindai QR code pada surat atau masukkan nomor surat untuk memeriksa keaslian dokumen.</p>
+            <h1 class="card-title">Verifikasi Surat Keterangan</h1>
+            <p class="card-desc">Pindai QR code pada lembar surat aktif kuliah atau masukkan NIM mahasiswa di bawah ini untuk memeriksa keabsahan dokumen.</p>
 
             <div class="search-box">
-                <input type="text" id="input-cert-id" placeholder="Masukkan Nomor Surat (Contoh: 2909)" autocomplete="off">
+                <input type="text" id="input-cert-id" placeholder="Masukkan NIM Mahasiswa (Contoh: 5021...)" autocomplete="off">
                 <button id="btn-verify" class="btn-primary">
-                    <i data-lucide="search" class="btn-icon"></i> Verifikasi
+                    <i data-lucide="search" class="btn-icon"></i>
+                    Verifikasi Dokumen
                 </button>
             </div>
 
-            <div class="divider"><span>atau</span></div>
+            <div class="divider">
+                <span>atau</span>
+            </div>
 
             <button id="btn-start-scan" class="btn-secondary">
-                <i data-lucide="qr-code" class="btn-icon"></i> Pindai QR Code Dokumen
+                <i data-lucide="qr-code" class="btn-icon"></i>
+                Pindai QR Code Surat
             </button>
 
             <div id="scanner-container" class="scanner-box hidden">
                 <div class="scanner-header">
-                    <h3>Memindai QR Code...</h3>
-                    <button id="btn-close-scanner" class="btn-icon-only"><i data-lucide="x"></i></button>
+                    <h3>Memindai QR Code Dokumen...</h3>
+                    <button id="btn-close-scanner" class="btn-icon-only">
+                        <i data-lucide="x"></i>
+                    </button>
                 </div>
                 <div class="scanner-wrapper">
                     <div id="qr-reader"></div>
                     <div class="scanner-laser"></div>
                 </div>
+                <p class="scanner-tip">Arahkan kamera ke QR code yang tercetak di dokumen surat keterangan.</p>
+            </div>
+        </section>
+
+        <section id="view-loading" class="card hidden fade-in">
+            <div class="spinner-container">
+                <div class="spinner"></div>
+                <p class="card-desc">Menghubungkan ke basis data repositori...</p>
             </div>
         </section>
 
         <section id="view-result-success" class="card result-card success hidden fade-in">
             <div class="success-badge-wrapper">
                 <div class="badge-glow"></div>
-                <div class="success-icon-box"><i data-lucide="shield-check" class="success-icon"></i></div>
+                <div class="success-icon-box">
+                    <i data-lucide="badge-check" class="success-icon"></i>
+                </div>
             </div>
             
-            <div class="verification-status text-emerald">Sertifikat Terverifikasi</div>
-            <p class="verification-time">Dinyatakan valid dan terdaftar secara resmi.</p>
+            <div class="verification-status text-emerald">Dokumen Terverifikasi</div>
+            <p class="verification-time">Dinyatakan berkas asli, valid, dan terdaftar di arsip fakultas.</p>
 
-           <div class="details-table" style="display: flex; flex-direction: column; gap: 0; padding: 5px 0;">
-                
-                <div class="detail-row" style="display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 12px 0;">
-                    <span class="detail-label" style="color: #64748b; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Nama</span>
-                    <span class="detail-value font-semibold text-slate-100" id="res-name" style="font-size: 0.95rem; color: #f1f5f9; text-align: left;">-</span>
+            <div class="details-table">
+                <div class="detail-row">
+                    <span class="detail-label">Nama Mahasiswa</span>
+                    <span class="detail-value student-name-highlight" id="res-name">-</span>
                 </div>
-                
-                <div class="detail-row" style="display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05);">
-                    <span class="detail-label" style="color: #64748b; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">NIM</span>
-                    <span class="detail-value font-mono" id="res-id" style="font-size: 0.95rem; color: #cbd5e1; text-align: left;">-</span>
+                <div class="detail-row">
+                    <span class="detail-label">NIM</span>
+                    <span class="detail-value font-mono font-semibold" id="res-nim">-</span>
                 </div>
-                
-                <div class="detail-row" style="display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05);">
-                    <span class="detail-label" style="color: #64748b; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Program Studi</span>
-                    <span class="detail-value text-slate-200" id="res-prodi" style="font-size: 0.95rem; color: #e2e8f0; text-align: left;">-</span>
+                <div class="detail-row">
+                    <span class="detail-label">Program Studi</span>
+                    <span class="detail-value" id="res-prodi">-</span>
                 </div>
-                
-                <div class="detail-row" style="display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05);">
-                    <span class="detail-label" style="color: #64748b; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Perihal Surat</span>
-                    <span class="detail-value text-slate-100" id="res-perihal" style="font-size: 0.95rem; color: #f1f5f9; text-align: left;">-</span>
+                <div class="detail-row">
+                    <span class="detail-label">Perihal Surat</span>
+                    <span class="detail-value" id="res-perihal">-</span>
                 </div>
-                
-                <div class="detail-row" style="display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05);">
-                    <span class="detail-label" style="color: #64748b; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Tahun Akademik</span>
-                    <span class="detail-value text-slate-200" id="res-ta" style="font-size: 0.95rem; color: #e2e8f0; text-align: left;">-</span>
+                <div class="detail-row">
+                    <span class="detail-label">Tahun Akademik</span>
+                    <span class="detail-value font-semibold" id="res-ta">-</span>
                 </div>
-                
-                <div class="detail-row" style="display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05);">
-                    <span class="detail-label" style="color: #64748b; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Nomor Surat</span>
-                    <span class="detail-value font-mono text-slate-100" id="res-nomor-surat" style="font-size: 0.95rem; color: #f1f5f9; text-align: left; word-break: break-all; line-height: 1.4;">-</span>
+                <div class="detail-row">
+                    <span class="detail-label">Nomor Surat</span>
+                    <span class="detail-value font-mono text-sm text-emerald" id="res-id">-</span>
                 </div>
-                
-                <div class="detail-row" style="display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05);">
-                    <span class="detail-label" style="color: #64748b; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Penandatangan</span>
-                    <span class="detail-value font-semibold text-slate-100" id="res-penandatangan" style="font-size: 0.95rem; color: #f1f5f9; text-align: left; line-height: 1.5;">-</span>
-                </div>
-                
-            </div>
-
-            <div class="disclaimer-box" style="display: flex; align-items: flex-start; text-align: left; gap: 16px; margin-top: 25px; padding: 18px 20px; border-left: 4px solid #10b981; background: rgba(16, 185, 129, 0.03); border-top: 1px solid rgba(16, 185, 129, 0.15); border-right: 1px solid rgba(16, 185, 129, 0.15); border-bottom: 1px solid rgba(16, 185, 129, 0.15); border-radius: 4px 12px 12px 4px;">
-                <div class="disclaimer-icon-box" style="background: transparent; width: auto; height: auto; padding: 0; margin-top: 2px;">
-                    <i data-lucide="shield-alert" class="disclaimer-icon" style="color: #10b981; width: 22px; height: 22px;"></i>
-                </div>
-                <div class="disclaimer-text" style="flex: 1;">
-                    <h4 style="margin: 0 0 8px 0; font-size: 0.95rem; font-weight: 800; letter-spacing: 0.03em; color: #10b981;">PERNYATAAN RESMI KEABSAHAN</h4>
-                    <p style="margin: 0; line-height: 1.6; color: #94a3b8; font-size: 0.9rem; font-weight: 400; text-align: justify;">
-                        Halaman ini merupakan media legalisasi data digital resmi <span style="color: #10b981; font-weight: 500;">Fakultas Ilmu Kesehatan Universitas Faletehan</span>. Dokumen yang divalidasi melalui sistem ini dinyatakan <span style="color: #10b981; font-weight: 600;">Sah & Valid</span>, benar telah ditandatangani secara elektronik oleh pejabat berwenang, dan memiliki kekuatan hukum administrasi yang sah.
-                    </p>
+                <div class="detail-row">
+                    <span class="detail-label">Penandatangan</span>
+                    <div id="signers-container" class="signers-block">
+                        </div>
                 </div>
             </div>
 
-            <div class="action-buttons" style="margin-top: 25px;">
-                <button class="btn-text btn-back"><i data-lucide="arrow-left" class="btn-icon"></i> Kembali</button>
+            <div class="activity-box" style="border-left-color: var(--primary-color); background: rgba(16, 185, 129, 0.02); margin-top: 12px;">
+                <div style="display: flex; gap: 12px; align-items: flex-start;">
+                    <i data-lucide="shield-check" style="color: var(--primary-color); width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px;"></i>
+                    <div>
+                        <h4 style="margin: 0 0 4px 0; color: #ffffff; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase;">Pernyataan Resmi Keabsahan</h4>
+                        <p style="margin: 0; color: var(--text-secondary); font-size: 0.8rem; line-height: 1.6; text-align: justify;">
+                            Halaman ini merupakan media legalisasi data arsip surat digital resmi <span style="color: var(--primary-color); font-weight: 500;">Fakultas Ilmu Kesehatan Universitas Faletehan</span>. Dokumen yang divalidasi melalui sistem ini dinyatakan <span style="color: var(--primary-color); font-weight: 600;">Sah & Valid</span>, benar dikeluarkan oleh tata usaha fakultas, dan ditandatangani oleh pejabat berwenang secara sah demi hukum administrasi akademik.
+                        </p>
+                    </div>
+                </div>
             </div>
+
+            <div class="action-buttons" style="margin-top: 32px; margin-bottom: 8px;">
+                <a id="btn-download-pdf" href="#" target="_blank" class="btn-success" style="display: none;">
+                    <i data-lucide="download" class="btn-icon"></i>
+                    Unduh PDF Sertifikat
+                </a>
+                <button class="btn-text btn-back">
+                    <i data-lucide="arrow-left" class="btn-icon"></i>
+                    Kembali
+                </button>
+            </div>
+            
         </section>
 
         <section id="view-result-failed" class="card result-card failed hidden fade-in">
-            <div class="failed-icon-box"><i data-lucide="alert-triangle" class="failed-icon"></i></div>
+            <div class="failed-icon-box">
+                <i data-lucide="alert-triangle" class="failed-icon"></i>
+            </div>
+            
             <div class="verification-status text-rose">Dokumen Tidak Ditemukan</div>
-            <p class="verification-time">Nomor surat atau kode identitas tidak terdaftar di sistem.</p>
-            <div class="action-buttons">
-                <button class="btn-primary btn-back"><i data-lucide="arrow-left" class="btn-icon"></i> Coba Lagi</button>
+            <p class="verification-time">Arsip data surat tidak terdaftar di server database kami.</p>
+            
+            <div class="failed-message">
+                Mohon periksa kembali nomor NIM yang Anda input atau pastikan lembar QR Code yang Anda scan berasal dari Surat Keterangan resmi milik Fakultas Ilmu Kesehatan (FIKES).
+            </div>
+
+            <div class="action-buttons" style="margin-top: 20px; display: flex; justify-content: center;">
+                <button class="btn-secondary btn-back" style="width: 100%;">
+                    <i data-lucide="arrow-left" class="btn-icon"></i>
+                    Kembali ke Pencarian
+                </button>
             </div>
         </section>
 
         <footer class="footer">
-            <p>&copy; 2026 Fakultas Ilmu Kesehatan - Universitas Faletehan.</p>
+            <p>&copy; 2026 Tata Usaha Fakultas Ilmu Kesehatan - Universitas Faletehan. All rights reserved.</p>
+            <p class="text-xs text-slate-500">Sistem Autentikasi Arsip Surat Digital Terverifikasi</p>
         </footer>
     </main>
 
