@@ -5,11 +5,12 @@
     "prodi": "S1 Keperawatan",
     "perihal": "Surat Keterangan Aktif Kuliah",
     "ta": "2025/2026 Ganjil",
-    "download_url": "https://drive.google.com/uc?export=download&id=CONTOH_ID_FILE",
+    "no_surat": "100/FIKes-UF/BAAK/Ket-Mhsw/VII/2026",
+    "download_url": "https://drive.google.com/uc?export=download&id=CONTOH_ID",
     "signers": [
       {
-        "role": "Wakil Dekan I FIKES",
-        "name": "Ners. H. Mamat Rahmat, M.Kep"
+        "role": "Dekan FIKes - UF",
+        "name": "Prof. Dr. dr. Siti Aminah, M.Kes"
       }
     ]
   }
